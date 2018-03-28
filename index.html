@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+
+Tumblr Boombox created by Robin 
+github @robinpx
+
+Last modified March 2018
+Icons found on Icon Finder
+
+-->
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Tumblr Boombox</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
+		<meta name="description" content="Play every audio post uploaded on a Tumblr account. Made by Robin.">
+
+		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Nunito" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="script.js"></script>
+		<link href="main.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="note">♫</div>
+		<div id="infobar">
+			<div class="wrap">
+				<div id="title">
+					<a href="./index.html">boombox</a>
+					<div id="mode" title="Toggle day and night mode"><span id="day">☀</span><span id="night">☽ </span></div>
+				</div>
+			<div id="desc">
+				<p>Play every audio post uploaded on a <a href="https://www.tumblr.com">Tumblr</a> account with this minimal audio player.</p>
+				<p>Made by <a href='https://robinpx.github.io'>Robin</a>.</p>
+			</div>
+			<form id="search" action="javascript:return false;"><input type="text" class="input" placeholder="Enter a username"></form>
+			</div>
+			<div id="defined" class="wrap">
+				<p id="playing">You are playing <span id="currentUser"></span>'s tunes.</p>
+				<p id="currently" title="Jump to current track">The current song is <span id="currentTrack"></span> by <span id="currentArtist"></span>.</p>
+			</div>
+		</div>
+
+		<div id="tracks">   
+			<div id="labels" class="lin"><div>Track</div><div>Artist</div></div> 
+		</div>
+
+		<div id="playerbar">
+			<div id="buttons">
+				<div id="repeat">
+					<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15" height="15" x="0px" y="0px"viewBox="0 0 51.4 51.4" style="enable-background:new 0 0 51.4 51.4;" xml:space="preserve"><g><path d="M1.7,25.2c0.553,0,1-0.447,1-1c0-6.065,4.935-11,11-11h24v8.964L51.4,12.2L37.7,2.236V11.2h-24c-7.168,0-13,5.832-13,13C0.7,24.753,1.147,25.2,1.7,25.2z"/><path d="M49.7,26.2c-0.553,0-1,0.447-1,1c0,6.065-4.935,11-11,11h-24v-8.964L0,39.2l13.7,9.964V40.2h24c7.168,0,13-5.832,13-13C50.7,26.647,50.253,26.2,49.7,26.2z"/></g></svg>	
+				</div>
+				
+				<div id="prev">
+					<svg height="20px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="20px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M256,128L32,256l224,128V260.8L480,384V128L256,251.2V128L256,128z"/></svg>
+				</div>
+
+				<div id="active">
+					<div id="play">
+						<svg height="22px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M128,96v320l256-160L128,96L128,96z"/></g></svg></div> 
+					<div id="pause">
+						<svg height="22px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><rect height="320" width="79" x="128" y="96"/><rect height="320" width="79" x="305" y="96"/></g></svg>
+					</div> 
+				</div>
+
+				<div id="next">
+					<svg height="20px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="20px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M256,128v123.2L32,128v256l224-123.2V384l224-128L256,128L256,128z"/></svg>
+				</div>
+
+				<div id="shuffle">
+					<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" x="0px" y="0px" viewBox="0 0 49.7 49.7" style="enable-background:new 0 0 49.7 49.7;" xml:space="preserve"><g><path d="M27,13.85h9v8.964l13.7-9.964L36,2.886v8.964h-9c-7.168,0-13,5.832-13,13c0,6.065-4.935,11-11,11H1c-0.553,0-1,0.447-1,1
+						s0.447,1,1,1h2c7.168,0,13-5.832,13-13C16,18.785,20.935,13.85,27,13.85z"/><path d="M1,13.85h2c2.713,0,5.318,0.994,7.336,2.799c0.191,0.171,0.43,0.255,0.667,0.255c0.274,0,0.548-0.112,0.745-0.333
+						c0.368-0.412,0.333-1.044-0.078-1.412C9.285,13.025,6.206,11.85,3,11.85H1c-0.553,0-1,0.447-1,1S0.447,13.85,1,13.85z"/>
+					<path d="M36,35.85h-9c-2.685,0-5.27-0.976-7.278-2.748c-0.411-0.365-1.044-0.327-1.411,0.089c-0.365,0.414-0.326,1.046,0.089,1.411
+						c2.374,2.095,5.429,3.248,8.601,3.248h9v8.964l13.7-9.964L36,26.886V35.85z"/></g>
+					</svg>
+				</div>
+			</div>
+
+			<div id="bars">
+				<div id="progressbg" value="0.5" postsEnd="1"></div>
+				<div id="loading"></div>
+				<div id="progress"></div>
+			</div>
+			<div id="progressnum">
+				<span id="currenttime">00:00</span>
+				<span id="currentdura">00:00</span>
+			</div>
+		</div>
+
+
+		<div id="player"></div>
+
+	</body>
+</html>
