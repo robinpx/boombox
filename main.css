@@ -1,0 +1,371 @@
+/* Queries */
+
+@media only screen and (max-width:815px) {
+    #labels {
+        position:absolute!important;
+        top:0!important;
+        left:0!important;
+        min-width:calc(100% - 2em)!important;
+        width:calc(100% - 2em)!important;
+    }
+    
+    .lin:nth-child(2) {
+        margin-top:45px!important;
+    }
+    
+    .lin {
+        min-width:calc(100% - 2em)!important;
+        width:calc(100% - 2em)!important;
+    }
+    
+    #infobar {
+        width:100%!important;
+        border:0!important;
+        border-bottom:1px solid #e5e5e5!important;
+    }
+    
+    .wrap {
+        min-width:calc(100% - 4em)!important;
+        width:calc(100% - 4em)!important;
+        padding:1.5em 2em!important;
+    }
+    
+    #tracks {
+        margin-bottom:130px!important;
+        min-width:100%!important;
+        width:100%!important;
+    }
+    
+    #tracks, #infobar {
+        display:block!important;
+        position:relative!important;
+        clear:both!important;
+        overflow-y:auto!important;
+    }
+    
+     #playerbar {
+         width:calc(100% - 4em)!important;
+         padding:1em 2em 2em 2em!important;
+     }
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    height:3px;
+    width:5px;
+    background:#cccccc;
+}
+
+::-webkit-scrollbar-thumb {
+    background:#333333;
+    border-radius:5px;
+}
+
+::-webkit-scrollbar-track {
+    background:#cccccc;
+}
+
+/* Basics */
+     
+body {
+	color:#000000;
+    background:#adadad;
+    font-family:roboto mono, sans-serif;
+    letter-spacing:0.05em;
+    font-size:13px;
+    margin:0;
+    padding:0;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+a, #currently span {
+    color:#1753b7;
+    text-decoration:none;
+    border:0;
+}
+
+a:hover {
+    color:#a1aec4;
+}
+
+#title a, #title a:hover {
+    font-size:1.4em;
+    color:#000;
+    line-height:150%;
+    font-weight:bold;
+    border-bottom:2px solid #1753b7;
+}
+
+#labels, #desc, #title, #defined {
+    font-size:1.15em;
+    font-family:nunito, sans-serif;
+}
+
+#buttons div, .tune, #bars, #loadmore, #mode, #note, #currently {
+    cursor:pointer;
+}
+
+#mode #day, #defined, .lin svg, #currently svg, #note {
+    display:none;
+}
+
+
+/* Info */
+
+#infobar {
+    top:0;
+    right:0;
+    position:fixed;
+    border-right:1px solid #e5e5e5;
+    height:100%;
+    background:#ffffff;
+    width:calc(27.5% - 1px);
+}
+
+.wrap {
+    width:calc(100% - 4em);
+    background:#ffffff;
+    padding:1.5em 2em;
+}
+
+.wrap:first-child {
+    margin-bottom:1em;
+}
+
+#desc {
+    margin:2em 0em;
+}
+
+#search .input {
+    width:calc(100% - 2em);
+    padding:0.5em 1em;
+    font-family:inherit;
+    border-radius:7px;
+    border:1px solid #eeeeee;
+    outline:0;
+    background:#f5f5f5;
+}
+
+.filtered { 
+    filter:invert(100%);
+    -webkit-filter:invert(100%);
+    background:#222222!important;
+}
+
+#mode {
+    float:right;
+    width:1.2em;
+    height:1.2em;
+    text-align:center;
+    border-radius:100%;
+    font-size:1.2em;
+    background:#ffffff;
+    padding:0.3em 0.4em 0.4em 0.4em;
+    border-radius:100%;
+    border:1px solid #e5e5e5;
+    display:inline-block;
+}
+
+#currently span:first-child {
+    font-weight:bold;
+}
+
+#defined {
+    border-bottom:1px solid #e5e5e5;
+    border-top:1px solid #e5e5e5;
+    margin-top:1em;
+    padding:1em 2em!important;
+    margin-bottom:2em;
+}
+
+#currentUser {
+    text-transform:lowercase;
+}
+
+/* Tracks */
+
+#tracks {
+    text-align:left;
+    position:fixed;
+    background:#ffffff;
+    top:0;
+    left:0;
+    height:100%;
+    overflow-y:scroll;
+    min-height:4em;
+    width:72.5%;
+    height:calc(100% - 130px);
+}
+
+#labels {
+    position:fixed;
+    width:calc(72.5% - 2em);
+    background:#ffffff!important;
+    z-index:9999;
+    border-bottom:1px solid #e5e5e5;
+    padding:0.8em 1em 0.5em 1em!important;
+    height:25px;
+}
+
+#tracks .lin {
+    padding:1em;
+    display:block;
+}
+
+.lin:nth-child(2) {
+    margin-top:45px;
+}
+
+.lin div {
+    width:calc(50% - 2em);
+    padding-right:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    display:inline-block;
+}
+
+.lin div:first-child {
+    font-weight:bold;
+}
+   
+.highlight {
+    color:#769cdb!important;
+}  
+
+.lin svg, #currently svg {
+    vertical-align:middle;
+    margin-right:1.5em;
+}
+
+.highlight svg {
+    display:inline-block!important;
+}
+
+.tune {
+    background:#f7f7f7;
+    color:#333333;
+}
+
+.tune:nth-child(odd) {
+    background:#eaeaea!important;
+}
+
+#loadmore {
+    background:#d8d8d8!important;
+    color:#000000!important;
+    font-weight:bold!important;
+    transition:0.8s;
+}
+
+#loadmore:hover {
+    background:#f3f3f3!important;
+    transition:0.8s;
+}
+
+/* Player */
+
+#playerbar {
+    width:calc(100% - 12em);
+    padding:1em 6em 2em 6em;
+    z-index:99999999;
+    position:fixed;
+    background:#ffffff;
+    bottom:0;
+    left:0;
+    border-top:1px solid #e5e5e5;
+    height:calc(129px - 3em);
+}
+
+audio {display:none!important;} /* hide html5 audio player */
+
+#buttons {
+    opacity:0;
+    text-align:center;
+}
+    
+#buttons div {
+    display:inline-block;
+    vertical-align:middle;
+    margin:0.5em 1.5% 0.6em 1.5%;
+}
+
+.on {
+    opacity:0.3!important;
+}
+
+#active {
+    padding-top:2px;
+}
+
+#buttons div:hover {opacity:0.6;}
+
+#progressbg, #progress, #loading {
+    height:5px;
+    border-radius:7px;
+    background:blue;
+}
+
+#progress, #loading {
+    margin-top:-5px;
+    position:absolute;
+}
+
+#progressbg {
+    margin-top:0px;
+    opacity:0.1;
+}
+
+#progress {
+    opacity:1;
+    z-index:999999;
+}
+
+#loading {
+    opacity:0.2;
+    z-index:99999;
+}
+
+#progressnum {
+    margin-top:1em;
+    display:block;
+    position:relative;
+    clear:both;
+}
+
+#progressnum span {
+    font-size:0.8em;
+}
+
+#currenttime {
+    float:left;
+}
+
+#currentdura {
+    float:right;
+}
+
+.error {
+    opacity:0.5!important;
+}
+
+/* Note - Triggered by scroll for small screens */
+
+#note {
+    position:fixed;
+    top:1em;
+    right:1em;
+    background:#ffffff;
+    padding:0.5em 0.8em;
+    border-radius:100%;
+    border:1px solid #e5e5e5;
+    font-size:1.2em;
+    z-index:999999999!important;
+}
