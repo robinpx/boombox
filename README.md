@@ -1,6 +1,5 @@
 # boombox
 This site plays every audio post uploaded on a Tumblr account. It's also responsive and mobile friendly!
-## Options 
 It can:
 - Play
 - Pause 
