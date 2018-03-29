@@ -52,11 +52,11 @@ function retrieveAPI(url) {
                     processAudioFile(audiofile);
                     appendTracks(track, artist);
                 }
-				else if (audiofile.indexOf("mp3") > 0) {					
-					count++;
-					audioFiles[count] = decodeURIComponent(audiofile); 
-					appendTracks(track, artist);
-				}
+		else if (audiofile.indexOf("mp3") > 0) {
+		    count++;
+		    audioFiles[count] = decodeURIComponent(audiofile); 
+		    appendTracks(track, artist);
+		}
                 else {
                     postsEnd++;
                 }
