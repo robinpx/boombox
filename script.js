@@ -44,14 +44,19 @@ function retrieveAPI(url) {
         for (var i=0; i < 30; i++) {
             try {
                 var post = tumblr_api_read.posts[i];
-                var embed = post["audio-embed"];
+                var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-                var audiofile = embed.substring(embed.indexOf("audio_file") + 11, embed.indexOf('" frameborder'));
+                var audiofile = audioEmbed.substring(audioEmbed.indexOf("audio_file") + 11, audioEmbed.indexOf('" frameborder'));
                 if (isTumblrAudio(audiofile)) {
                     processAudioFile(audiofile);
                     appendTracks(track, artist);
                 }
+				else if (audiofile.indexOf("mp3") > 0) {					
+					count++;
+					audioFiles[count] = decodeURIComponent(audiofile); 
+					appendTracks(track, artist);
+				}
                 else {
                     postsEnd++;
                 }
