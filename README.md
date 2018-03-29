@@ -9,4 +9,6 @@ This site plays every audio post uploaded on a Tumblr account. It's also respons
 - Shuffle 
 - Load more songs
 - Jump to current song
+- Clickable progress bar
+- Clickable track list
 
