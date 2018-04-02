@@ -91,7 +91,7 @@ a, #currently span {
     border:0;
 }
 
-a:hover {
+a:hover, #seeCurrent:hover, #scrollTo:hover {
     color:#a1aec4;
 }
 
@@ -108,13 +108,15 @@ a:hover {
     font-family:nunito, sans-serif;
 }
 
-#buttons div, .tune, #bars, #loadmore, #mode, #note, #currently {
+#buttons div, .tune, #bars, #loadmore, #mode, #note, #currently, #seeCurrent, #scrollTo {
     cursor:pointer;
 }
 
 #mode #day, #defined, .lin svg, #currently svg, #note {
     display:none;
 }
+
+audio {display:none!important;}
 
 
 /* Info */
@@ -173,7 +175,7 @@ a:hover {
     display:inline-block;
 }
 
-#currently span:first-child {
+#currentTrack {
     font-weight:bold;
 }
 
@@ -187,6 +189,19 @@ a:hover {
 
 #currentUser {
     text-transform:lowercase;
+}
+
+#more {
+	display:none;
+	font-weight:bold;
+}
+
+#seeCurrent {
+	color:#5e8fe0;
+}
+
+#scrollTo {
+	color:#3b78dd;
 }
 
 /* Tracks */
@@ -283,8 +298,6 @@ a:hover {
     border-top:1px solid #e5e5e5;
     height:calc(129px - 3em);
 }
-
-audio {display:none!important;} /* hide html5 audio player */
 
 #buttons {
     opacity:0;
