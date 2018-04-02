@@ -4,7 +4,7 @@
 Tumblr Boombox created by Robin 
 github @robinpx
 
-Last modified March 2018
+Last modified April 2018
 Icons found on Icon Finder
 
 -->
@@ -12,7 +12,6 @@ Icons found on Icon Finder
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 		<title>Tumblr Boombox</title>
 
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
@@ -28,7 +27,7 @@ Icons found on Icon Finder
 		<div id="infobar">
 			<div class="wrap">
 				<div id="title">
-					<a href="./">boombox</a>
+					<a href="./index.html">boombox</a>
 					<div id="mode" title="Toggle day and night mode"><span id="day">☀</span><span id="night">☽ </span></div>
 				</div>
 			<div id="desc">
@@ -39,7 +38,13 @@ Icons found on Icon Finder
 			</div>
 			<div id="defined" class="wrap">
 				<p id="playing">You are playing <span id="currentUser"></span>'s tunes.</p>
-				<p id="currently" title="Jump to current track">The current song is <span id="currentTrack"></span> by <span id="currentArtist"></span>.</p>
+				<div id="currently" title="Toggle options">The current song is <span id="currentTrack"></span> by <span id="currentArtist"></span>.
+				</div>
+				<div id="more">
+				<span id="seeCurrent" title="Toggle back to current song">Playing now</span>.
+				<span id="scrollTo" title="Scroll to current song in list">Scroll to song</span>.
+				<span id="currentPost" title="Link to the Tumblr post"></span>.
+				</div>
 			</div>
 		</div>
 
@@ -80,7 +85,7 @@ Icons found on Icon Finder
 			</div>
 
 			<div id="bars">
-				<div id="progressbg" value="0.5" max="1"></div>
+				<div id="progressbg" value="0.5" postsEnd="1"></div>
 				<div id="loading"></div>
 				<div id="progress"></div>
 			</div>
