@@ -5,6 +5,7 @@
 var boombox = function() {
     
 var audioFiles = [];
+var postURLs = []; 
 var linkOfWindow = window.location.href;
 var indexOfQuery = linkOfWindow.indexOf("?username=");
 var username = linkOfWindow.substring(indexOfQuery+10, linkOfWindow.length);
@@ -48,14 +49,17 @@ function retrieveAPI(url) {
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("audio_file") + 11, audioEmbed.indexOf('" frameborder'));
+		var postURL = decodeURIComponent(post["url"]);
                 if (isTumblrAudio(audiofile)) {
                     processAudioFile(audiofile);
+					postURLs[count] = postURL;
                     appendTracks(track, artist);
                 }
-		else if (audiofile.indexOf("mp3") > 0) {
-		    count++;
-		    audioFiles[count] = decodeURIComponent(audiofile); 
-		    appendTracks(track, artist);
+		else if (audiofile.indexOf("mp3") > 0) {					
+			count++;
+			audioFiles[count] = decodeURIComponent(audiofile); 
+			postURLs[count] = postURL;
+			appendTracks(track, artist);
 		}
                 else {
                     postsEnd++;
@@ -280,6 +284,7 @@ function setPlayer() {
 function changeCurrentSong() {
     $("#currentTrack").empty().append($(".highlight .track").html());
     $("#currentArtist").empty().append($(".highlight .artist").html());
+    $("#currentPost").empty().append("<a href='" + postURLs[index] + "' target='_'>Go to post</a>");
 }
 
 /**
@@ -491,8 +496,18 @@ $(document).ready(function(){
             localStorage.mode = "off";
         }
     });
-
+    
     $("#currently").click(function() {
+	$("#more").show();
+	$(this).hide();
+    });
+	
+    $("#seeCurrent").click(function() {
+	$("#currently").show();
+	$("#more").hide();
+    });
+	
+    $("#scrollTo").click(function() {
         var winWidth = $(window).width();
         var elem, scr = null;
         var scr = "+=" + ($(".highlight").first().offset().top - 45);
