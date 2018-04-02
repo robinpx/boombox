@@ -52,14 +52,14 @@ function retrieveAPI(url) {
 		var postURL = decodeURIComponent(post["url"]);
                 if (isTumblrAudio(audiofile)) {
                     processAudioFile(audiofile);
-					postURLs[count] = postURL;
+		    postURLs[count] = postURL;
                     appendTracks(track, artist);
                 }
 		else if (audiofile.indexOf("mp3") > 0) {					
-			count++;
-			audioFiles[count] = decodeURIComponent(audiofile); 
-			postURLs[count] = postURL;
-			appendTracks(track, artist);
+		    count++;
+		    audioFiles[count] = decodeURIComponent(audiofile); 
+		    postURLs[count] = postURL;
+		    appendTracks(track, artist);
 		}
                 else {
                     postsEnd++;
