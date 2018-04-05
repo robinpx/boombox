@@ -107,22 +107,10 @@ function appendTracks(track, artist) {
 }
 
 /**
- * Processes audio file to the mp3 file hosted on Tumblr.
+ * Decodes URL 
  **/
 function processAudioFile(file) {
-     file = decodeURIComponent(file);
-     if (file.indexOf("www.tumblr.com/audio_file/") > 0) {
-         var indexOfAudio = file.indexOf("audio_file");
-         file = file.substring(indexOfAudio, file.length);
-         
-         var indexOfTumblr = file.indexOf("tumblr");
-         file = file.substring(indexOfTumblr, file.length);
-         
-         file = "https://a.tumblr.com/" + file + "o1.mp3";
-     }
-    if (file.indexOf("https") < 0) {
-        file = file.replace("http", "https");
-    }
+    file = decodeURIComponent(file);
     count++;
     audioFiles[count] = file; 
 }
