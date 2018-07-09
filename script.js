@@ -54,23 +54,28 @@ function retrieveAPI(url) {
                 if (fileType === 0) {
                     processTumblrAudio(audiofile);
                     appendTracks(track, artist);
+                    postURLs[count] = postURL;
                 }
-            		else if (fileType === 1) {
-            		    count++;
-            		    audioFiles[count] = decodeURIComponent(audiofile);
-            		    appendTracks(track, artist);
-            		}
+            	else if (fileType === 1) {
+            	    count++;
+            	    audioFiles[count] = decodeURIComponent(audiofile);
+            	    appendTracks(track, artist);
+		    postURLs[count] = postURL;
+            	}
                 else if(fileType === 2) {
                     processSCAudio(audiofile);
                     appendTracks(track, artist);
+                    postURLs[count] = postURL;
                 }
                 else if(fileType === 3) {
-                  processBCAudio(track, artist);
+		    var bool = processBCAudio(track, artist);
+		    if (bool) {
+			postURLs[count] = postURL;
+		    }
                 }
                 else {
                     postsEnd++;
                 }
-                postURLs[count] = postURL;
             }
             catch(e) {
                 console.log(e);
@@ -138,23 +143,25 @@ function processSCAudio(file) {
 }
 
 function processBCAudio(track, artist) {
-  var tr = track.toLowerCase().replace(/\s/g, "-");
-  var art = artist.toLowerCase().replace(/\s/g, "");
-  var url = "https://alltubedownload.net/json?url=https://" + art + ".bandcamp.com/track/" + tr;
-  var file = "";
-$.getJSON(url, function(err, data) {
-  if (err !== null) {
-    console.log(err);
-  } 
-else {
-file = data.url;
-  }
-});
-  if (file.length !== 0) {
-    count++;
-    audioFiles[count] = file;
-    appendTracks(track, artist);
-  }
+    var tr = track.toLowerCase().replace(/\s/g, "-");
+    var art = artist.toLowerCase().replace(/\s/g, "");
+    var url = "https://alltubedownload.net/json?url=https://" + art + ".bandcamp.com/track/" + tr;
+    var file = "";
+    $.getJSON(url, function(err, data) {
+    if (err !== null) {
+       console.log(err);
+    } 
+    else {
+       file = data.url;
+    }
+    });
+    if (file.length !== 0) {
+      count++;
+      audioFiles[count] = file;
+      appendTracks(track, artist);
+      return true;
+    }
+    return false;
 }
 
 
