@@ -1,11 +1,11 @@
 /**
- * Tumblr Boombox Script 
- * github @robinpx  
+ * Tumblr Boombox Script
+ * github @robinpx
  **/
 var boombox = function() {
-    
+
 var audioFiles = [];
-var postURLs = []; 
+var postURLs = [];
 var linkOfWindow = window.location.href;
 var indexOfQuery = linkOfWindow.indexOf("?username=");
 var username = linkOfWindow.substring(indexOfQuery+10, linkOfWindow.length);
@@ -23,7 +23,7 @@ var timer;
 /**
  * Gets first batch of tracks if there are any.
  **/
-$.getScript("//" + username + ".tumblr.com/api/read/json?type=audio", function() {
+$.getScript("http://" + username + ".tumblr.com/api/read/json?type=audio", function() {
     postsTotal = tumblr_api_read["posts-total"];
     postsStart = tumblr_api_read["posts-start"];
     console.log(postsTotal + " is the total amount of audio posts on " + username + ".tumblr.com.");
@@ -48,22 +48,32 @@ function retrieveAPI(url) {
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-                var audiofile = audioEmbed.substring(audioEmbed.indexOf("audio_file") + 11, audioEmbed.indexOf('" frameborder'));
-		var postURL = decodeURIComponent(post["url"]);
-                if (isTumblrAudio(audiofile)) {
-                    processAudioFile(audiofile);
-		    postURLs[count] = postURL;
+
+            		var postURL = decodeURIComponent(post["url"]);
+                // console.log(audioEmbed);
+                var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
+                // console.log(audiofile);
+                var fileType = getFileType(audiofile);
+                if (fileType === 0) {
+                    processTumblrAudio(audiofile);
                     appendTracks(track, artist);
                 }
-		else if (audiofile.indexOf("mp3") > 0) {					
-		    count++;
-		    audioFiles[count] = decodeURIComponent(audiofile); 
-		    postURLs[count] = postURL;
-		    appendTracks(track, artist);
-		}
+            		else if (fileType === 1) {
+            		    count++;
+            		    audioFiles[count] = decodeURIComponent(audiofile);
+            		    appendTracks(track, artist);
+            		}
+                else if(fileType === 2) {
+                    processSCAudio(audiofile);
+                    appendTracks(track, artist);
+                }
+                else if(fileType === 3) {
+                  processBCAudio(track, artist);
+                }
                 else {
                     postsEnd++;
                 }
+                postURLs[count] = postURL;
             }
             catch(e) {
                 console.log(e);
@@ -74,7 +84,7 @@ function retrieveAPI(url) {
     }).done(function() {
         numOfSongs = audioFiles.length;
         $(".tune").unbind("click", pressedSong);
-        $(".tune").bind("click", pressedSong); 
+        $(".tune").bind("click", pressedSong);
         if (postsEnd <= postsTotal) {
         $("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
         }
@@ -83,13 +93,20 @@ function retrieveAPI(url) {
 
 /**
  * Checks if audio file is from Tumblr
+ * Returns a number -- 0 = tumblr, 1 = mp3, 2 = soundcloud, 3 = bandcamp
  **/
-function isTumblrAudio(file) {
-    if (file.toString().indexOf("spotify") < 0 
-    && file.toString().indexOf("soundcloud") < 0 
-    && file.toString().indexOf("bandcamp") < 0 
-    && file.indexOf("tumblr") > 0) {
-        return true;
+function getFileType(file) {
+    if (file.indexOf(username) > 0) {
+        return 0;
+    }
+    else if (file.indexOf("mp3") > 0) {
+      return 1;
+    }
+    else if(file.indexOf("soundcloud") > 0) {
+      return 2;
+    }
+    else if(file.indexOf("bandcamp") > 0) {
+      return 3;
     }
     else {
         return false;
@@ -107,12 +124,47 @@ function appendTracks(track, artist) {
 }
 
 /**
- * Decodes URL 
+ * Decodes URL
  **/
-function processAudioFile(file) {
-    file = decodeURIComponent(file);
+function processTumblrAudio(file) {
+    file = file.substring(file.indexOf("audio_file") + 11, file.length);
     count++;
-    audioFiles[count] = file; 
+    audioFiles[count] = decodeURIComponent(file);
+}
+
+function processSCAudio(file) {
+    count++;
+    file = decodeURIComponent(file);
+    file = file.substring(file.indexOf("url") + 4, file.indexOf("&amp"));
+    audioFiles[count] = file + "/stream?client_id=N2eHz8D7GtXSl6fTtcGHdSJiS74xqOUI";
+    // client id @ wordpress
+}
+
+function processBCAudio(track, artist) {
+  var tr = track.toLowerCase().replace(/\s/g, "-");
+  var art = artist.toLowerCase().replace(/\s/g, "");
+  var url = "https://alltubedownload.net/json?url=https://" + art + ".bandcamp.com/track/" + tr;
+  var file = "";
+  $.ajax({
+    url: url,
+    headers: {  'Access-Control-Allow-Origin': linkOfWindow },
+    type: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      file = data.url;
+      console.log(data);
+    },
+    error: function(xhr, status, error) {
+      var err = JSON.parse("(" + xhr.responseText + ")");
+      console.log(err.Message);
+    }
+  });
+
+  if (file.length !== 0) {
+    count++;
+    audioFiles[count] = file;
+    appendTracks(track, artist);
+  }
 }
 
 
@@ -132,10 +184,10 @@ function init() {
         $("#play").show();
         $(this).hide();
     });
-    
+
     $("#play").click(function() {
         $("audio").unbind("ended", endedSong);
-        $("audio").bind("ended", endedSong); 
+        $("audio").bind("ended", endedSong);
         checkError();
         /* bind and check errors for first song */
         document.getElementById(current).ontimeupdate = function() { updateProgress(); }
@@ -147,7 +199,7 @@ function init() {
 
 /**
  * setBoombox sets up the welcome screen, currently playing
- * section if tracks are not null, or no tracks screen if 
+ * section if tracks are not null, or no tracks screen if
  * there are no tracks.
  **/
 function setBoombox() {
@@ -196,7 +248,7 @@ function repeatSong() {
     document.getElementById(current).ontimeupdate = function() { updateProgress(); }
     document.getElementById(current).play();
  }
- 
+
 function shuffleSong() {
     exitSong();
     console.log("Shuffling....");
@@ -256,7 +308,7 @@ function enterSong() {
 }
 
 /**
- * Resets player for current song.  
+ * Resets player for current song.
  **/
 function setPlayer() {
     document.getElementById("currenttime").innerHTML = "00:00";
@@ -270,14 +322,23 @@ function setPlayer() {
 }
 
 function changeCurrentSong() {
-    $("#currentTrack").empty().append($(".highlight .track").html());
-    $("#currentArtist").empty().append($(".highlight .artist").html());
+    var currentTrack = $(".highlight .track").html();
+    var currentArtist = $(".highlight .artist").html();
+    $("#currentTrack").empty().append(currentTrack);
+    if (currentArtist !== "Unknown") {
+      $("#by").show();
+      $("#currentArtist").empty().append(currentArtist);
+    }
+    else {
+      $("#by").hide();
+      $("#currentArtist").empty();
+    }
     $("#currentPost").empty().append("<a href='" + postURLs[index] + "' target='_'>Go to post</a>");
 }
 
 /**
- * Checks if audio source loads after 15 seconds. 
- * Goes to next song if error. 
+ * Checks if audio source loads after 15 seconds.
+ * Goes to next song if error.
  **/
 function checkError() {
     $("." + current).removeClass("error");
@@ -311,7 +372,7 @@ function updateProgress() {
 
 /**
 * Change milliseconds to minutes and seconds.
-* // returns String 
+* // returns String
 **/
 function formatTime(sec) {
    var min = Math.floor(sec / 60); // round
@@ -353,7 +414,7 @@ function shiftProgress(elem, e) {
 }
 
 function getAudioFile(i) {
-  return audioFiles[i];  
+  return audioFiles[i];
 }
 
 function getRepeatBool() {
@@ -407,7 +468,7 @@ window.onload = function() {
            boombox.nextSong();
        }
     });
-    
+
     $("#prev").click(function() {
         if (boombox.getRepeatBool() === true) {
             boombox.repeatSong();
@@ -419,7 +480,7 @@ window.onload = function() {
             boombox.prevSong();
         }
     });
-    
+
     $("#player").append("<audio class='aud' src='" + boombox.getAudioFile(0) + "' preload='auto' id='song-0' controls></audio>");
 }
 
@@ -434,16 +495,16 @@ $(document).ready(function(){
         }
     } else {
         console.log("No storage support.");
-    } 
-    
+    }
+
     $("#pause").hide();
     $("#buttons").fadeTo(600, 1);
-    
+
     $("#search").submit(function(event){
        var value = $("input:first").val();
        location.replace("?username=" + value);
    });
-   
+
    $("#repeat").click(function() {
        if ($(this).hasClass("on")) {
            boombox.setRepeatBool(false);
@@ -454,7 +515,7 @@ $(document).ready(function(){
            $(this).addClass("on");
        }
    });
-   
+
     $("#shuffle").click(function() {
         if ($(this).hasClass("on")) {
            boombox.setShuffleBool(false);
@@ -465,11 +526,11 @@ $(document).ready(function(){
            $(this).addClass("on");
        }
    });
-   
+
    $("#progressbg, #loading, #progress").click(function(e) {
        boombox.shiftProgress($(this), e);
    });
-    
+
     $("#mode").click(function() {
         if (!$("body").hasClass("filtered")) {
             $("body").addClass("filtered");
@@ -484,17 +545,17 @@ $(document).ready(function(){
             localStorage.mode = "off";
         }
     });
-    
+
     $("#currently").click(function() {
 	$("#more").show();
 	$(this).hide();
     });
-	
+
     $("#seeCurrent").click(function() {
 	$("#currently").show();
 	$("#more").hide();
     });
-	
+
     $("#scrollTo").click(function() {
         var winWidth = $(window).width();
         var elem, scr = null;
@@ -507,12 +568,12 @@ $(document).ready(function(){
             var $elem = $("body, html");
             scr = ($(".highlight").first().offset().top - 65);
         }
-        
-        $elem.animate({ 
+
+        $elem.animate({
             scrollTop : scr
         }, 500);
     });
-    
+
     function jumpToSong() {
         var winWidth = $(window).width();
         if (winWidth < 815) {
@@ -525,12 +586,12 @@ $(document).ready(function(){
                 else {
                     $("#note").fadeOut();
                 }
-            }; 
+            };
             toSong();
             $(window).on("scroll", function () {
                 toSong();
             });
-                
+
             $("#note").click(function() {
                 $("html, body").animate({ scrollTop: ($(".highlight").first().offset().top - 65) }, 550);
                 return false;
@@ -538,7 +599,6 @@ $(document).ready(function(){
         }
         return;
     }
-    
+
     jumpToSong(); // if window is smaller than 815, adds button to corner.
-    
 });
