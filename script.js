@@ -48,11 +48,8 @@ function retrieveAPI(url) {
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-
-            		var postURL = decodeURIComponent(post["url"]);
-                // console.log(audioEmbed);
+            	var postURL = decodeURIComponent(post["url"]);
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
-                // console.log(audiofile);
                 var fileType = getFileType(audiofile);
                 if (fileType === 0) {
                     processTumblrAudio(audiofile);
@@ -147,16 +144,12 @@ function processBCAudio(track, artist) {
   var file = "";
   $.ajax({
     url: url,
-    headers: {  'Access-Control-Allow-Origin': linkOfWindow },
+    headers: {  'Access-Control-Allow-Origin': * },
     type: 'GET',
-    dataType: 'json',
+    dataType: 'jsonp',
     success: function(data) {
       file = data.url;
       console.log(data);
-    },
-    error: function(xhr, status, error) {
-      var err = JSON.parse("(" + xhr.responseText + ")");
-      console.log(err.Message);
     }
   });
 
