@@ -149,6 +149,7 @@ audio {display:none!important;}
 #search .input {
     width:calc(100% - 2em);
     padding:0.5em 1em;
+    font-size:inherit;
     font-family:inherit;
     border-radius:7px;
     border:1px solid #eeeeee;
