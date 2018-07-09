@@ -144,7 +144,6 @@ function processBCAudio(track, artist) {
   var file = "";
   $.ajax({
     url: url,
-    headers: {  'Access-Control-Allow-Origin': * },
     type: 'GET',
     dataType: 'jsonp',
     success: function(data) {
