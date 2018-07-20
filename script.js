@@ -147,14 +147,16 @@ function processBCAudio(track, artist) {
     var art = artist.toLowerCase().replace(/\s/g, "");
     var url = "https://alltubedownload.net/json?url=https://" + art + ".bandcamp.com/track/" + tr;
     var file = "";
+    
     $.getJSON(url, function(err, data) {
-    if (err !== null) {
-       console.log(err);
-    } 
-    else {
-       file = data.url;
-    }
+       if (err !== null) {
+          console.log(err);
+       } 
+       else {
+          file = data.url;
+       }
     });
+	
     if (file.length !== 0) {
       count++;
       audioFiles[count] = file;
