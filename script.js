@@ -19,11 +19,12 @@ var repeatBool = false;
 var shuffleBool = false;
 var current = "";
 var timer;
-	
+var bool = true;
+var finishedBCProcess = false;
 /**
  * Gets first batch of tracks if there are any.
  **/
-$.getScript("//" + username + ".tumblr.com/api/read/json?type=audio", function() {
+$.getScript("https://" + username + ".tumblr.com/api/read/json?type=audio", function() {
     postsTotal = tumblr_api_read["posts-total"];
     postsStart = tumblr_api_read["posts-start"];
     console.log(postsTotal + " is the total amount of audio posts on " + username + ".tumblr.com.");
@@ -42,13 +43,14 @@ $.getScript("//" + username + ".tumblr.com/api/read/json?type=audio", function()
  **/
 function retrieveAPI(url) {
     $.getScript(url, function() {
-        for (var i=0; i < 30; i++) {
+			var i = 0;
+      while (bool && i < 30) {
             try {
                 var post = tumblr_api_read.posts[i];
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-            	var postURL = decodeURIComponent(post["url"]);
+            		var postURL = decodeURIComponent(post["url"]);
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
                 var fileType = getFileType(audiofile);
                 if (fileType === 0) {
@@ -60,18 +62,21 @@ function retrieveAPI(url) {
             	    count++;
             	    audioFiles[count] = decodeURIComponent(audiofile);
             	    appendTracks(track, artist);
-		    postURLs[count] = postURL;
+									postURLs[count] = postURL;
             	}
                 else if(fileType === 2) {
                     processSCAudio(audiofile);
                     appendTracks(track, artist);
                     postURLs[count] = postURL;
                 }
-                else if(fileType === 3) {
-		    var bool = processBCAudio(track, artist);
-		    if (bool) {
-			postURLs[count] = postURL;
-		    }
+                else if (fileType === 3) {
+									  count++;
+										processBCAudio(audiofile, count);
+										appendTracks(track, artist);
+										postURLs[count] = postURL;
+										bcAudioCheck(function() {
+											bool = true;
+										});
                 }
                 else {
                     postsEnd++;
@@ -81,16 +86,27 @@ function retrieveAPI(url) {
                 console.log(e);
                 i++;
             }
+						i++;
         }
         console.log(count + " files processed.");
     }).done(function() {
-        numOfSongs = audioFiles.length;
-        $(".tune").unbind("click", pressedSong);
-        $(".tune").bind("click", pressedSong);
-        if (postsEnd <= postsTotal) {
-        $("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
-        }
+			numOfSongs = audioFiles.length;
+			$(".tune").unbind("click", pressedSong);
+			$(".tune").bind("click", pressedSong);
+			if (postsEnd <= postsTotal) {
+			$("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
+			}
     });
+}
+
+function bcAudioCheck(callback) {
+	if (finishedBCProcess === true) {
+		console.log("Bandcamp audio processed");
+		callback && callback();
+	}
+	else {
+		setTimeout(bcAudioCheck, 1000, callback);
+	}
 }
 
 /**
@@ -122,6 +138,7 @@ function appendTracks(track, artist) {
     if (artist === undefined) {
         artist = "Unknown";
     }
+		console.log(count + " inside appendtracks");
     $("#tracks").append("<div class='lin tune song-" + count + "'><div class='track'><svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='1.4em' height='1.2em' viewBox='0 0 30 32'><g id='icomoon-ignore'></g><path d='M13.652 5.265l-7.696 6.134h-5.955v4.748l-0.003 0.003 0.003 0.003v4.698h5.987l7.664 6.015v-6.015h0.001v-9.451h-0.001z' fill='#000000'></path><path d='M16.105 10.726c1.142 1.522 1.746 3.336 1.746 5.246 0 1.95-0.627 3.795-1.813 5.335l0.832 0.641c1.329-1.726 2.032-3.792 2.032-5.976 0-2.139-0.677-4.171-1.957-5.877l-0.84 0.631z' fill='#000000'></path><path d='M20.336 6.919l-0.809 0.669c1.973 2.389 3.059 5.416 3.059 8.521 0 3.069-1.009 5.956-2.919 8.348l0.82 0.655c2.060-2.58 3.148-5.693 3.148-9.003-0-3.349-1.172-6.613-3.3-9.19z' fill='#000000'></path><path d='M23.606 3.51l-0.789 0.694c2.896 3.289 4.492 7.518 4.492 11.909 0 4.302-1.539 8.467-4.335 11.727l0.798 0.683c2.957-3.45 4.587-7.858 4.587-12.41 0-4.647-1.688-9.123-4.753-12.603z' fill='#000000'></path></svg>" + track + "</div><div class='artist'>" + artist + "</div></div>");
 }
 
@@ -142,28 +159,30 @@ function processSCAudio(file) {
     // client id @ wordpress
 }
 
-function processBCAudio(track, artist) {
-    var tr = track.toLowerCase().replace(/\s/g, "-");
-    var art = artist.toLowerCase().replace(/\s/g, "");
-    var url = "https://alltubedownload.net/json?url=https://" + art + ".bandcamp.com/track/" + tr;
-    var file = "";
-    
-    $.getJSON(url, function(err, data) {
-       if (err !== null) {
-          console.log(err);
-       } 
-       else {
-          file = data.url;
-       }
-    });
-	
-    if (file.length !== 0) {
-      count++;
-      audioFiles[count] = file;
-      appendTracks(track, artist);
-      return true;
-    }
-    return false;
+function processBCAudio(audiofile, count) {
+    var url = audiofile.substring(0, audiofile.indexOf('" allowtransparency'));
+		console.log(url);
+		$("#player").append("<div id='bc'></div>");
+		var file = "";
+
+		$.getJSON("http://www.whateverorigin.org/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
+			var contentstr = data.contents;
+
+			var i = contentstr.indexOf("var playerdata");
+			var i2 = contentstr.indexOf("var parentpage");
+			contentstr = contentstr.substring(i, i2);
+			var mp3str = '"file":{"mp3-128":"';
+			var i3 = contentstr.indexOf(mp3str) + mp3str.length;
+			var i4 = i3 + contentstr.substring(i3).indexOf('"}');
+			contentstr = contentstr.substring(i3, i4);
+
+			file = contentstr;
+
+		}).done(function() {
+			console.log(file);
+	    audioFiles[count] = file;
+			finishedBCProcess = true;
+		});
 }
 
 
