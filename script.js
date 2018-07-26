@@ -75,7 +75,7 @@ function retrieveAPI(url) {
 			processBCAudio(audiofile, count);
 			appendTracks(track, artist);
 			postURLs[count] = postURL;
-			audioFiles[count] = "";
+			audioFiles[count] = "null";
 			bcAudioCheck(function() {
 				bool = true;
 			});
@@ -88,7 +88,7 @@ function retrieveAPI(url) {
                 console.log(e);
                 i++;
             }
-						i++;
+	i++;
         }
         console.log(count + " files processed.");
     }).done(function() {
