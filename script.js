@@ -51,7 +51,7 @@ function retrieveAPI(url) {
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-            		var postURL = decodeURIComponent(post["url"]);
+            	var postURL = decodeURIComponent(post["url"]);
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
                 var fileType = getFileType(audiofile);
                 if (fileType === 0) {
@@ -63,7 +63,7 @@ function retrieveAPI(url) {
             	    count++;
             	    audioFiles[count] = decodeURIComponent(audiofile);
             	    appendTracks(track, artist);
-									postURLs[count] = postURL;
+			postURLs[count] = postURL;
             	}
                 else if(fileType === 2) {
                     processSCAudio(audiofile);
@@ -71,13 +71,14 @@ function retrieveAPI(url) {
                     postURLs[count] = postURL;
                 }
                 else if (fileType === 3) {
-									  count++;
-										processBCAudio(audiofile, count);
-										appendTracks(track, artist);
-										postURLs[count] = postURL;
-										bcAudioCheck(function() {
-											bool = true;
-										});
+			count++;
+			processBCAudio(audiofile, count);
+			appendTracks(track, artist);
+			postURLs[count] = postURL;
+			audioFiles[count] = "";
+			bcAudioCheck(function() {
+				bool = true;
+			});
                 }
                 else {
                     postsEnd++;
