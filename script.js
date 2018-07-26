@@ -43,14 +43,14 @@ $.getScript("//" + username + ".tumblr.com/api/read/json?type=audio", function()
  **/
 function retrieveAPI(url) {
     $.getScript(url, function() {
-			var i = 0;
+      var i = 0;
       while (bool && i < 30) {
             try {
                 var post = tumblr_api_read.posts[i];
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-            		var postURL = decodeURIComponent(post["url"]);
+            	var postURL = decodeURIComponent(post["url"]);
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
                 var fileType = getFileType(audiofile);
                 if (fileType === 0) {
@@ -62,7 +62,7 @@ function retrieveAPI(url) {
             	    count++;
             	    audioFiles[count] = decodeURIComponent(audiofile);
             	    appendTracks(track, artist);
-									postURLs[count] = postURL;
+		    postURLs[count] = postURL;
             	}
                 else if(fileType === 2) {
                     processSCAudio(audiofile);
@@ -70,14 +70,14 @@ function retrieveAPI(url) {
                     postURLs[count] = postURL;
                 }
                 else if (fileType === 3) {
-									  count++;
-										processBCAudio(audiofile, count);
-										appendTracks(track, artist);
-										audioFiles[count] = "";
-										postURLs[count] = postURL;
-										bcAudioCheck(function() {
-											bool = true;
-										});
+		    count++;
+		    processBCAudio(audiofile, count);
+		    appendTracks(track, artist);
+		    audioFiles[count] = "//robinpx.github.io/audio/song.mp3"; // add empty audio in case there is none 
+	            postURLs[count] = postURL;
+		    bcAudioCheck(function() {
+		    	bool = true;
+		    });
                 }
                 else {
                     postsEnd++;
@@ -87,27 +87,27 @@ function retrieveAPI(url) {
                 console.log(e);
                 i++;
             }
-						i++;
+	    i++;
         }
         console.log(count + " files processed.");
     }).done(function() {
-			numOfSongs = audioFiles.length;
-			$(".tune").unbind("click", pressedSong);
-			$(".tune").bind("click", pressedSong);
-			if (postsEnd <= postsTotal) {
-			$("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
-			}
+	numOfSongs = audioFiles.length;
+	$(".tune").unbind("click", pressedSong);
+	$(".tune").bind("click", pressedSong);
+	if (postsEnd <= postsTotal) {
+	   $("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
+	}
     });
 }
 
 function bcAudioCheck(callback) {
-	if (finishedBCProcess === true) {
-		console.log("Bandcamp audio processed");
-		callback && callback();
-	}
-	else {
-		setTimeout(bcAudioCheck, 1000, callback);
-	}
+   if (finishedBCProcess === true) {
+	console.log("Bandcamp audio processed");
+	callback && callback();
+   }
+   else {
+	setTimeout(bcAudioCheck, 1000, callback);
+   }
 }
 
 /**
@@ -162,28 +162,27 @@ function processSCAudio(file) {
 
 function processBCAudio(audiofile, count) {
     var url = audiofile.substring(0, audiofile.indexOf('" allowtransparency'));
-		console.log(url);
-		$("#player").append("<div id='bc'></div>");
-		var file = "";
+    console.log(url);
+    $("#player").append("<div id='bc'></div>");
+    var file = "";
 
-		$.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
-			var contentstr = data.contents;
+    $.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
+	var contentstr = data.contents;
+	var i = contentstr.indexOf("var playerdata");
+	var i2 = contentstr.indexOf("var parentpage");
+	contentstr = contentstr.substring(i, i2);
+	var mp3str = '"file":{"mp3-128":"';
+	var i3 = contentstr.indexOf(mp3str) + mp3str.length;
+	var i4 = i3 + contentstr.substring(i3).indexOf('"}');
+	contentstr = contentstr.substring(i3, i4);
 
-			var i = contentstr.indexOf("var playerdata");
-			var i2 = contentstr.indexOf("var parentpage");
-			contentstr = contentstr.substring(i, i2);
-			var mp3str = '"file":{"mp3-128":"';
-			var i3 = contentstr.indexOf(mp3str) + mp3str.length;
-			var i4 = i3 + contentstr.substring(i3).indexOf('"}');
-			contentstr = contentstr.substring(i3, i4);
+	file = contentstr;
 
-			file = contentstr;
-
-		}).done(function() {
-			console.log(file);
-	    audioFiles[count] = file;
-			finishedBCProcess = true;
-		});
+	}).done(function() {
+	console.log(file);
+	audioFiles[count] = file;
+	finishedBCProcess = true;
+   });
 }
 
 
