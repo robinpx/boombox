@@ -21,10 +21,11 @@ var current = "";
 var timer;
 var bool = true;
 var finishedBCProcess = false;
+	
 /**
  * Gets first batch of tracks if there are any.
  **/
-$.getScript("https://" + username + ".tumblr.com/api/read/json?type=audio", function() {
+$.getScript("//" + username + ".tumblr.com/api/read/json?type=audio", function() {
     postsTotal = tumblr_api_read["posts-total"];
     postsStart = tumblr_api_read["posts-start"];
     console.log(postsTotal + " is the total amount of audio posts on " + username + ".tumblr.com.");
