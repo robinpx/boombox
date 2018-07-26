@@ -21,7 +21,6 @@ var current = "";
 var timer;
 var bool = true;
 var finishedBCProcess = false;
-	
 /**
  * Gets first batch of tracks if there are any.
  **/
@@ -51,7 +50,7 @@ function retrieveAPI(url) {
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-            	var postURL = decodeURIComponent(post["url"]);
+            		var postURL = decodeURIComponent(post["url"]);
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
                 var fileType = getFileType(audiofile);
                 if (fileType === 0) {
@@ -63,7 +62,7 @@ function retrieveAPI(url) {
             	    count++;
             	    audioFiles[count] = decodeURIComponent(audiofile);
             	    appendTracks(track, artist);
-			postURLs[count] = postURL;
+									postURLs[count] = postURL;
             	}
                 else if(fileType === 2) {
                     processSCAudio(audiofile);
@@ -71,14 +70,14 @@ function retrieveAPI(url) {
                     postURLs[count] = postURL;
                 }
                 else if (fileType === 3) {
-			count++;
-			processBCAudio(audiofile, count);
-			appendTracks(track, artist);
-			postURLs[count] = postURL;
-			audioFiles[count] = "null";
-			bcAudioCheck(function() {
-				bool = true;
-			});
+									  count++;
+										processBCAudio(audiofile, count);
+										appendTracks(track, artist);
+										audioFiles[count] = "";
+										postURLs[count] = postURL;
+										bcAudioCheck(function() {
+											bool = true;
+										});
                 }
                 else {
                     postsEnd++;
@@ -88,7 +87,7 @@ function retrieveAPI(url) {
                 console.log(e);
                 i++;
             }
-	i++;
+						i++;
         }
         console.log(count + " files processed.");
     }).done(function() {
@@ -167,7 +166,7 @@ function processBCAudio(audiofile, count) {
 		$("#player").append("<div id='bc'></div>");
 		var file = "";
 
-		$.getJSON("http://www.whateverorigin.org/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
+		$.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
 			var contentstr = data.contents;
 
 			var i = contentstr.indexOf("var playerdata");
