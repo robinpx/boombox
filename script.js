@@ -110,22 +110,20 @@ function retrieveAPI(url) {
                 console.log(e);
                 i++;
             }
-						i++;
+		i++;
         }
         console.log(count + " files processed.");
     }).done(function() {
-			numOfSongs = audioFiles.length;
-			console.log("postLength" + postLength + "\n postsTotal:" + postsTotal + "\n postsEnd: " + postsEnd);
-			console.log((postLength + postsEnd) + " total ");
-
-			if (postsEnd <= postsTotal && (postLength + postsEnd) > 50) {
-				$("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
-			}
-
-			$("#tracks").prepend(trackCache);
-
-			trackCache = $("#tracks .tune").detach();
-			filter();
+	numOfSongs = audioFiles.length;
+	
+	if (postsEnd <= postsTotal && (postLength + postsEnd) > 50) {
+	   $("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
+	}
+	 
+	console.log("Setting cache and filter...");
+	$("#tracks").prepend(trackCache);
+	trackCache = $("#tracks .tune").detach();
+	filter();
 
     });
 }
@@ -200,7 +198,6 @@ function processBCAudio(audioUrl, count) {
 	file = contentstr;
 
     }).done(function() {
-	// console.log(file);
 	audioFiles[count] = file;
     });
 }
@@ -224,7 +221,6 @@ function processSPAudio(audioUrl, count) {
 	file = contentstr;
 
      }).done(function() {
-	// console.log(file);
 	audioFiles[count] = file;
     });
 }
@@ -540,20 +536,20 @@ function setFilter() {
 }
 
 function getNumofHosts() {
-	var sum = 0;
-	if ($(".tune").hasClass("tumblr")) {
-		sum += 1;
-	}
-	if ($(".tune").hasClass("soundcloud")) {
-		sum += 1;
-	}
+   var sum = 0;
+   if ($(".tune").hasClass("tumblr")) {
+	sum += 1;
+   }
+   if ($(".tune").hasClass("soundcloud")) {
+	sum += 1;
+   }
   if ($(".tune").hasClass("bandcamp")) {
-	 sum += 1;
-	}
-	if ($(".tune").hasClass("spotify")) {
-		sum += 1;
-	}
-	return sum;
+	sum += 1;
+   }
+   if ($(".tune").hasClass("spotify")) {
+        sum += 1; 
+   }
+  return sum;
 }
 
 return {
@@ -736,7 +732,7 @@ $(document).ready(function(){
 
     function jumpToSong() {
         var winWidth = $(window).width();
-        if (winWidth < 815) {
+        if (winWidth < 875) {
             var triggerScroll = 1000;
             toSong = function() {
             var scroll = $(window).scrollTop();
@@ -760,5 +756,5 @@ $(document).ready(function(){
         return;
     }
 
-    jumpToSong(); // if window is smaller than 815, adds button to corner.
+    jumpToSong(); // if window is smaller than 875, adds button to corner.
 });
