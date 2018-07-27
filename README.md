@@ -4,13 +4,13 @@
 
 ## Features
 ### Music Player
-Buttons
+#### Buttons
 - Play, pause
 - Next, previous 
 - Repeat
 - Shuffle
 
-Progress Bar
+#### Progress Bar
 - Clickable 
 - Current time
 - Duration
@@ -21,11 +21,11 @@ Clickable
 Load more button
 
 ### Sidebar
-Current song toggler
+#### Current song toggler
 - Scroll to song button 
 - Link to the audio's Tumblr post
 
-Other settings menu
+#### Other settings menu
 - Day/Night mode
 - Search by tag
 - Filter out hosts (Tumblr, Soundcloud, Bandcamp, Spotify)
