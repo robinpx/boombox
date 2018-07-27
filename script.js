@@ -12,7 +12,7 @@ var indexOfUsername = linkOfWindow.indexOf("?username=");
 var indexOfTag = linkOfWindow.indexOf("?tag=");
 var tagged = "";
 if (indexOfTag > 0) {
-	tagged = linkOfWindow.substring(indexOfTag+5, indexOfUsername);
+    tagged = linkOfWindow.substring(indexOfTag+5, indexOfUsername);
 }
 var username = linkOfWindow.substring(indexOfUsername+10, linkOfWindow.length);
 
@@ -58,15 +58,15 @@ $.getScript("//" + username + ".tumblr.com/api/read/json?type=audio&tagged=" + t
  **/
 function retrieveAPI(url) {
     $.getScript(url, function() {
-			var i = 0;
+      var i = 0;
       while (bool && i < 30) {
             try {
                 var post = tumblr_api_read.posts[i];
-								postLength = tumblr_api_read.posts.length;
+		postLength = tumblr_api_read.posts.length;
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-            		var postURL = decodeURIComponent(post["url"]);
+            	var postURL = decodeURIComponent(post["url"]);
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
                 var fileType = getFileType(audiofile);
                 if (fileType === 0) {
@@ -78,7 +78,7 @@ function retrieveAPI(url) {
             	    count++;
             	    audioFiles[count] = decodeURIComponent(audiofile);
             	    appendTracks(track, artist, "tumblr");
-									postURLs[count] = postURL;
+		    postURLs[count] = postURL;
             	}
                 else if(fileType === 2) {
                     processSCAudio(audiofile);
@@ -86,22 +86,22 @@ function retrieveAPI(url) {
                     postURLs[count] = postURL;
                 }
                 else if (fileType === 3) {
-									  count++;
-										processBCAudio(audiofile, count);
-										appendTracks(track, artist, "bandcamp");
-										audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
-										postURLs[count] = postURL;
-										bool = true;
+		    count++;
+	       	    processBCAudio(audiofile, count);
+		    appendTracks(track, artist, "bandcamp");
+		    audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
+		    postURLs[count] = postURL;
+		    bool = true;
                 }
-								else if (fileType === 4) {
-									count++;
-									processSPAudio(audiofile, count);
-									appendTracks(track, artist, "spotify");
-									audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
-									postURLs[count] = postURL;
-									bool = true;
+		else if (fileType === 4) {
+		    count++;
+		    processSPAudio(audiofile, count);
+		    appendTracks(track, artist, "spotify");
+		    audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
+		    postURLs[count] = postURL;
+		    bool = true;
 
-								}
+		}
                 else {
                     postsEnd++;
                 }
@@ -139,17 +139,17 @@ function getFileType(file) {
         return 0;
     }
     else if (file.indexOf("mp3") > 0) {
-      return 1;
+        return 1;
     }
     else if(file.indexOf("soundcloud") > 0) {
-      return 2;
+        return 2;
     }
     else if(file.indexOf("bandcamp") > 0) {
-      return 3;
+        return 3;
     }
-		else if(file.indexOf("spotify") > 0) {
-			return 4;
-		}
+    else if(file.indexOf("spotify") > 0) {
+        return 4;
+    }
     else {
         return false;
     }
@@ -184,49 +184,49 @@ function processSCAudio(file) {
 
 function processBCAudio(audioUrl, count) {
     var url = audioUrl.substring(0, audioUrl.indexOf('" allowtransparency'));
-		var file = "";
+    var file = "";
 
-		$.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
-			var contentstr = data.contents;
+    $.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
+	var contentstr = data.contents;
 
-			var i = contentstr.indexOf("var playerdata");
-			var i2 = contentstr.indexOf("var parentpage");
-			contentstr = contentstr.substring(i, i2);
-			var mp3str = '"file":{"mp3-128":"';
-			var i3 = contentstr.indexOf(mp3str) + mp3str.length;
-			var i4 = i3 + contentstr.substring(i3).indexOf('"}');
-			contentstr = contentstr.substring(i3, i4);
+	var i = contentstr.indexOf("var playerdata");
+	var i2 = contentstr.indexOf("var parentpage");
+	contentstr = contentstr.substring(i, i2);
+	var mp3str = '"file":{"mp3-128":"';
+	var i3 = contentstr.indexOf(mp3str) + mp3str.length;
+	var i4 = i3 + contentstr.substring(i3).indexOf('"}');
+	contentstr = contentstr.substring(i3, i4);
 
-			file = contentstr;
+	file = contentstr;
 
-		}).done(function() {
-			// console.log(file);
-	    audioFiles[count] = file;
-		});
+    }).done(function() {
+	// console.log(file);
+	audioFiles[count] = file;
+    });
 }
 
 function processSPAudio(audioUrl, count) {
-	var url = audioUrl;
-	var file = "";
+     var url = audioUrl;
+     var file = "";
 
-	$.getJSON("https://whatever-origin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
-		var contentstr = data.contents;
+     $.getJSON("https://whatever-origin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
+	var contentstr = data.contents;
 
-		var i = contentstr.indexOf('script id="resource"');
-		var i2 = contentstr.indexOf('"track_number"');
-		contentstr = contentstr.substring(i, i2);
+	var i = contentstr.indexOf('script id="resource"');
+	var i2 = contentstr.indexOf('"track_number"');
+	contentstr = contentstr.substring(i, i2);
 
-		var mp3str = '"preview_url":"';
-		var i3 = contentstr.indexOf(mp3str) + mp3str.length;
-		var i4 = i3 + contentstr.substring(i3).indexOf('",');
-		contentstr = contentstr.substring(i3, i4).replace(/\\/g, "");
+	var mp3str = '"preview_url":"';
+	var i3 = contentstr.indexOf(mp3str) + mp3str.length;
+	var i4 = i3 + contentstr.substring(i3).indexOf('",');
+	contentstr = contentstr.substring(i3, i4).replace(/\\/g, "");
 
-		file = contentstr;
+	file = contentstr;
 
-	}).done(function() {
-		// console.log(file);
-		audioFiles[count] = file;
-	});
+     }).done(function() {
+	// console.log(file);
+	audioFiles[count] = file;
+    });
 }
 
 /**
@@ -276,10 +276,10 @@ function setBoombox() {
         $("#tracks").append("<div class='lin'>It's quiet over here in <a href='https://" + username + ".tumblr.com/tagged/" + tagged + "'>#" + tagged.replace(/\+/g," ") + "</a> on Tumblr user <a href='https://" + username + ".tumblr.com'>" + username + "</a>'s account.</div>");
         return;
     }
-		else {
+   else {
         $("#tracks").append("<div class='lin'>Oh... there aren't any tunes on Tumblr user <a href='https://" + username + ".tumblr.com'>" + username + "</a>'s account.</div>");
-			return;
-		}
+	return;
+   }
 }
 
 function setSongClass(direction) {
@@ -328,7 +328,7 @@ function shuffleSong() {
     exitSong();
     console.log("Shuffling....");
     index = Math.floor(Math.random() * ($(".tune").length - 1));
-		current = "song-" + index;
+    current = "song-" + index;
     enterSong();
 }
 
@@ -493,7 +493,7 @@ function getFirstAudioFile() {
 }
 
 function getUsername() {
-	return username;
+  return username;
 }
 
 function getRepeatBool() {
@@ -517,15 +517,15 @@ function getIndex() {
 }
 
 function filter() {
-	$("#tracks").prepend(trackCache);
+   $("#tracks").prepend(trackCache);
 
-	$(".filterout").each(function() {
-		var filterout = $(this).attr("id");
-		$("." + filterout).remove();
-	});
+   $(".filterout").each(function() {
+       var filterout = $(this).attr("id");
+       $("." + filterout).remove();
+   });
 
-	$(".tune").unbind("click", pressedSong);
-	$(".tune").bind("click", pressedSong);
+   $(".tune").unbind("click", pressedSong);
+   $(".tune").bind("click", pressedSong);
 }
 
 function setFilter() {
@@ -565,13 +565,13 @@ return {
     getShuffleBool: getShuffleBool,
     shiftProgress: shiftProgress,
     getFirstAudioFile: getFirstAudioFile,
-		getUsername, getUsername,
+    getUsername, getUsername,
     nextSong: nextSong,
     prevSong: prevSong,
     repeatSong: repeatSong,
     shuffleSong: shuffleSong,
-		getNumofHosts: getNumofHosts,
-		setFilter: setFilter,
+    getNumofHosts: getNumofHosts,
+    setFilter: setFilter,
     loadMore: loadMore
 }
 
@@ -612,7 +612,7 @@ $(document).ready(function(){
         console.log("Has storage. Mode is currently " + localStorage.mode + ".");
         if (localStorage.mode === "on") {
             $("body").addClass("bodyfilter");
-						$("#infobar, #tracks, #labels, #playerbar").addClass("filtered");
+	    $("#infobar, #tracks, #labels, #playerbar").addClass("filtered");
             $("#day").show();
             $("#night").hide();
         }
@@ -628,28 +628,28 @@ $(document).ready(function(){
        location.replace("?username=" + value);
    });
 
-	 $("#tagbar").submit(function(event){
-	 	 var value = $(this).find("input:first").val().replace(/ /g, "+");
-		 if (window.username !== undefined) {
-	 	 		location.replace("?tag=" + value + "?username=" + boombox.getUsername());
-	 		}
-			else {
-				$("#notif").show();
-			}
-	 });
+   $("#tagbar").submit(function(event){
+	var value = $(this).find("input:first").val().replace(/ /g, "+");
+        if (window.boombox.getUsername() !== undefined) {
+	    location.replace("?tag=" + value + "?username=" + boombox.getUsername());
+	 }
+	else {
+	    $("#notif").show();
+	}
+   });
 
-	 $(".filtertype").click(function() {
-		 var hosts = boombox.getNumofHosts();
-		 var filtered = $(".filterout").length;
-		 console.log("filtered : " + filtered + " \n hosts : " + hosts);
-		 if (!(hosts < filtered) && hosts > 1) {
-			 $(this).toggleClass("filterout");
-		 }
-		 else {
-			 $(this).removeClass("filterout");
-		 }
-		 boombox.setFilter();
-	 });
+   $(".filtertype").click(function() {
+	var hosts = boombox.getNumofHosts();
+	var filtered = $(".filterout").length;
+	console.log("filtered : " + filtered + " \n hosts : " + hosts);
+	if (!(hosts < filtered) && hosts > 1) {
+	    $(this).toggleClass("filterout");
+	}
+	else {
+	    $(this).removeClass("filterout");
+       }
+       boombox.setFilter();
+   });
 
    $("#repeat").click(function() {
        if ($(this).hasClass("on")) {
@@ -673,33 +673,33 @@ $(document).ready(function(){
        }
    });
 
-   $("#progressbg, #loading, #progress").click(function(e) {
-       boombox.shiftProgress($(this), e);
-   });
-
-	 $("#open").click(function() {
-		 $("#menuwrap").fadeIn();
-		 $("#open").hide();
-		 $("#close").show();
-	 });
-
-	 $("#close").click(function() {
-		 $("#open").show();
-		 $("#close").hide();
-		 $("#menuwrap").fadeOut();
-	 });
+    $("#progressbg, #loading, #progress").click(function(e) {
+        boombox.shiftProgress($(this), e);
+    });
+	
+    $("#open").click(function() {
+        $("#menuwrap").fadeIn();
+	$("#open").hide();
+	$("#close").show();
+    });
+ 
+    $("#close").click(function() {
+       $("#open").show();
+       $("#close").hide();
+       $("#menuwrap").fadeOut();
+    });
 
     $("#mode").click(function() {
         if (!$("body").hasClass("bodyfilter")) {
-						$("body").addClass("bodyfilter");
-						$("#infobar, #tracks, #labels, #playerbar").addClass("filtered");
+	    $("body").addClass("bodyfilter");
+	    $("#infobar, #tracks, #labels, #playerbar").addClass("filtered");
             $("#day").show();
             $("#night").hide();
             localStorage.mode = "on";
         }
         else {
-					  $("body").removeClass("bodyfilter");
-				  	$("#infobar, #tracks, #labels, #playerbar").removeClass("filtered");
+            $("body").removeClass("bodyfilter");
+	    $("#infobar, #tracks, #labels, #playerbar").removeClass("filtered");
             $("#night").show();
             $("#day").hide();
             localStorage.mode = "off";
