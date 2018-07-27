@@ -16,8 +16,9 @@
 - Duration
 
 ### Track List 
-#### Clickable 
-#### Load more button
+- List that features the *track* and *artist*
+- Current song is highlighted when playing
+- Clickable
 
 ### Sidebar
 #### Current song toggler
