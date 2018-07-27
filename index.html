@@ -27,19 +27,55 @@ Icons found on Icon Finder
 			<div class="wrap">
 				<div id="title">
 					<a href="./">boombox</a>
-					<div id="mode" title="Toggle day and night mode"><span id="day">☀</span><span id="night">☽ </span></div>
+					<div id="menu">
+						<svg id="open" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="26" height="32" viewBox="0 0 26 32">
+						<g id="icomoon-ignore">
+						</g>
+						<path d="M0.205 6.937h25.59v4.265h-25.59v-4.265z" fill="#000000"></path>
+						<path d="M0.205 13.867h25.59v4.265h-25.59v-4.265z" fill="#000000"></path>
+						<path d="M0.205 20.798h25.59v4.265h-25.59v-4.265z" fill="#000000"></path>
+						</svg>
+						<svg id="close" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32">
+						<g id="icomoon-ignore">
+						</g>
+						<path d="M10.722 9.969l-0.754 0.754 5.278 5.278-5.253 5.253 0.754 0.754 5.253-5.253 5.253 5.253 0.754-0.754-5.253-5.253 5.278-5.278-0.754-0.754-5.278 5.278z" fill="#000000"></path>
+						</svg>
+					</div>
 				</div>
+				<div id="menuwrap">
+					<div id="menuinfo">
+						<div class="wrap">
+							<p><strong>Other Settings</strong></p>
+							<div id="mode" title="Toggle day and night mode">
+							<span id="day"><span class="icon">☀</span> Turn on Day Mode</span>
+							<span id="night"><span class="icon">★</span> Turn on Night Mode</span>
+					 		</div>
+					</div>
+			 	  <div class="wrap">
+						<p>Play audio under a certain tag.</p>
+						<form class="search" id="tagbar" action="javascript:return false;"><input type="text" class="input" placeholder="Enter a tag"></form>
+						<span id="notif">You must enter a username first.</span>
+					</div>
+					<div class="wrap">
+						<p>Click to filter out audio hosted by the following sites.</p>
+						<a class="filtertype" id="spotify">Spotify</a>
+						<a class="filtertype" id="soundcloud">Soundcloud</a>
+						<a class="filtertype" id="tumblr">Tumblr</a>
+						<a class="filtertype" id="bandcamp">Bandcamp</a>
+					</div>
+				</div>
+			</div>
 			<div id="desc">
 				<p>Play every audio post uploaded on a <a href="https://www.tumblr.com">Tumblr</a> account with this minimal audio player.</p>
 				<p>Made by <a href='https://robinpx.github.io'>Robin</a>.</p>
 			</div>
-			<form id="search" action="javascript:return false;"><input type="text" class="input" placeholder="Enter a username"></form>
+			<form class="search" id="usernamebar" action="javascript:return false;"><input type="text" class="input" placeholder="Enter a username"></form>
 			</div>
 			<div id="defined" class="wrap">
 				<p id="playing">
 					You are playing <span id="currentUser"></span>'s tunes.
 				</p>
-				<p id="currently" title="Toggle options">
+				<p id="currently" title="Toggle song options">
 					The current song is <span id="currentTrack"></span><span id="by"> by </span><span id="currentArtist"></span>.
 				</p>
 				<p id="more">
@@ -50,34 +86,34 @@ Icons found on Icon Finder
 			</div>
 		</div>
 
+		<div id="labels" class="lin"><div>Track</div><div>Artist</div></div>
 		<div id="tracks">
-			<div id="labels" class="lin"><div>Track</div><div>Artist</div></div>
 		</div>
 
 		<div id="playerbar">
 			<div id="buttons">
 				<div id="repeat">
-					<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15" height="15" x="0px" y="0px"viewBox="0 0 51.4 51.4" style="enable-background:new 0 0 51.4 51.4;" xml:space="preserve"><g><path d="M1.7,25.2c0.553,0,1-0.447,1-1c0-6.065,4.935-11,11-11h24v8.964L51.4,12.2L37.7,2.236V11.2h-24c-7.168,0-13,5.832-13,13C0.7,24.753,1.147,25.2,1.7,25.2z"/><path d="M49.7,26.2c-0.553,0-1,0.447-1,1c0,6.065-4.935,11-11,11h-24v-8.964L0,39.2l13.7,9.964V40.2h24c7.168,0,13-5.832,13-13C50.7,26.647,50.253,26.2,49.7,26.2z"/></g></svg>
+					<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1.2em" height="1.2em" x="0px" y="0px"viewBox="0 0 51.4 51.4" style="enable-background:new 0 0 51.4 51.4;" xml:space="preserve"><g><path d="M1.7,25.2c0.553,0,1-0.447,1-1c0-6.065,4.935-11,11-11h24v8.964L51.4,12.2L37.7,2.236V11.2h-24c-7.168,0-13,5.832-13,13C0.7,24.753,1.147,25.2,1.7,25.2z"/><path d="M49.7,26.2c-0.553,0-1,0.447-1,1c0,6.065-4.935,11-11,11h-24v-8.964L0,39.2l13.7,9.964V40.2h24c7.168,0,13-5.832,13-13C50.7,26.647,50.253,26.2,49.7,26.2z"/></g></svg>
 				</div>
 
 				<div id="prev">
-					<svg height="20px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="20px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M256,128L32,256l224,128V260.8L480,384V128L256,251.2V128L256,128z"/></svg>
+					<svg height="1.5em" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="1.5em" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M256,128L32,256l224,128V260.8L480,384V128L256,251.2V128L256,128z"/></svg>
 				</div>
 
 				<div id="active">
 					<div id="play">
-						<svg height="22px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M128,96v320l256-160L128,96L128,96z"/></g></svg></div>
+						<svg height="1.7em" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="1.7em" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path d="M128,96v320l256-160L128,96L128,96z"/></g></svg></div>
 					<div id="pause">
-						<svg height="22px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="22px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><rect height="320" width="79" x="128" y="96"/><rect height="320" width="79" x="305" y="96"/></g></svg>
+						<svg height="1.7em" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="1.7em" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><rect height="320" width="79" x="128" y="96"/><rect height="320" width="79" x="305" y="96"/></g></svg>
 					</div>
 				</div>
 
 				<div id="next">
-					<svg height="20px" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="20px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M256,128v123.2L32,128v256l224-123.2V384l224-128L256,128L256,128z"/></svg>
+					<svg height="1.5em" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="1.5em" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M256,128v123.2L32,128v256l224-123.2V384l224-128L256,128L256,128z"/></svg>
 				</div>
 
 				<div id="shuffle">
-					<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" x="0px" y="0px" viewBox="0 0 49.7 49.7" style="enable-background:new 0 0 49.7 49.7;" xml:space="preserve"><g><path d="M27,13.85h9v8.964l13.7-9.964L36,2.886v8.964h-9c-7.168,0-13,5.832-13,13c0,6.065-4.935,11-11,11H1c-0.553,0-1,0.447-1,1
+					<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1.4em" height="1.4em" x="0px" y="0px" viewBox="0 0 49.7 49.7" style="enable-background:new 0 0 49.7 49.7;" xml:space="preserve"><g><path d="M27,13.85h9v8.964l13.7-9.964L36,2.886v8.964h-9c-7.168,0-13,5.832-13,13c0,6.065-4.935,11-11,11H1c-0.553,0-1,0.447-1,1
 						s0.447,1,1,1h2c7.168,0,13-5.832,13-13C16,18.785,20.935,13.85,27,13.85z"/><path d="M1,13.85h2c2.713,0,5.318,0.994,7.336,2.799c0.191,0.171,0.43,0.255,0.667,0.255c0.274,0,0.548-0.112,0.745-0.333
 						c0.368-0.412,0.333-1.044-0.078-1.412C9.285,13.025,6.206,11.85,3,11.85H1c-0.553,0-1,0.447-1,1S0.447,13.85,1,13.85z"/>
 					<path d="M36,35.85h-9c-2.685,0-5.27-0.976-7.278-2.748c-0.411-0.365-1.044-0.327-1.411,0.089c-0.365,0.414-0.326,1.046,0.089,1.411

@@ -1,6 +1,6 @@
 /* Queries */
 
-@media only screen and (max-width:815px) {
+@media only screen and (max-width:875px) {
     #labels {
         position:absolute!important;
         top:0!important;
@@ -9,8 +9,12 @@
         width:calc(100% - 2em)!important;
     }
 
-    .lin:nth-child(2) {
-        margin-top:45px!important;
+    #labels {
+      position:relative!important;
+    }
+
+    .lin:nth-child(2), #tracks {
+        margin-top:0px!important;
     }
 
     .lin {
@@ -21,7 +25,16 @@
     #infobar {
         width:100%!important;
         border:0!important;
+        overflow:hidden;
         border-bottom:1px solid #e5e5e5!important;
+    }
+
+    #menuwrap {
+      overflow-y:auto!important;
+    }
+
+    #menuinfo {
+      height:calc(100% + 45px + 1em);
     }
 
     .wrap {
@@ -33,6 +46,7 @@
     #tracks {
         margin-bottom:130px!important;
         min-width:100%!important;
+        overflow-y:auto!important;
         width:100%!important;
     }
 
@@ -40,7 +54,6 @@
         display:block!important;
         position:relative!important;
         clear:both!important;
-        overflow-y:auto!important;
     }
 
      #playerbar {
@@ -69,8 +82,8 @@
 /* Basics */
 
 body {
-	color:#000000;
-    background:#adadad;
+    color:#000000;
+    background:#f5f5f5;
     font-family:roboto mono, sans-serif;
     letter-spacing:0.05em;
     font-size:13px;
@@ -89,10 +102,18 @@ a, #currentTrack, #currentArtist {
     color:#1753b7;
     text-decoration:none;
     border:0;
+    -webkit-transition:0.5s;
+    -moz-transition:0.5s;
+    -o-transition:0.5s;
+    transition:0.5s;
 }
 
-a:hover, #seeCurrent:hover, #scrollTo:hover {
+a:hover, #seeCurrent:hover, #scrollTo:hover, #mode:hover {
     color:#a1aec4;
+    -webkit-transition:0.5s;
+    -moz-transition:0.5s;
+    -o-transition:0.5s;
+    transition:0.5s;
 }
 
 #title a, #title a:hover {
@@ -103,7 +124,7 @@ a:hover, #seeCurrent:hover, #scrollTo:hover {
     border-bottom:2px solid #1753b7;
 }
 
-#labels, #desc, #title, #defined {
+#labels, #desc, #title, #defined, #menuwrap {
     font-size:1.15em;
     font-family:nunito, sans-serif;
 }
@@ -146,48 +167,51 @@ audio {display:none!important;}
     margin:2em 0em;
 }
 
-#search .input {
+.search .input {
     width:calc(100% - 2em);
     padding:0.5em 1em;
-    font-size:inherit;
-    font-family:inherit;
+    font-size:1em;
+    font-family:roboto mono, monospace;
     border-radius:7px;
     border:1px solid #eeeeee;
     outline:0;
     background:#f5f5f5;
 }
 
-.filtered {
+#tagbar .input {
+  font-size:0.85em;
+  background:#eff5ff;
+  border:1px solid #d5e0f2;
+}
+
+#tagbar {
+  margin-bottom:1em;
+}
+
+.bodyfilter {
     height:auto;
     width:auto;
-    filter:invert(100%);
-    -webkit-filter:invert(100%);
     background:#222222!important;
 }
 
-#mode {
-    float:right;
-    width:1.2em;
-    height:1.2em;
-    text-align:center;
-    border-radius:100%;
-    font-size:1.2em;
-    padding:0.3em 0.4em 0.4em 0.4em;
-    border-radius:100%;
-    border:1px solid #e5e5e5;
-    display:inline-block;
+.filtered {
+  filter:invert(100%);
+  -webkit-filter:invert(100%);
 }
 
 #currentTrack {
     font-weight:bold;
 }
 
-#defined {
+#defined, .wrap:nth-child(2) {
     border-bottom:1px solid #e5e5e5;
     border-top:1px solid #e5e5e5;
-    margin-top:1em;
-    padding:1em 2em!important;
-    margin-bottom:2em;
+}
+
+#defined {
+  margin-top:1em;
+  padding:1em 2em!important;
+  margin-bottom:2em;
 }
 
 #currentUser {
@@ -207,6 +231,97 @@ audio {display:none!important;}
 	color:#3b78dd;
 }
 
+/* Menu */
+
+#menu #open {
+  margin-top:-0.4em;
+  width:0.8em;
+}
+
+#menu #close {
+  width:1.5em;
+  margin-top:-0.4em;
+  margin-left:-0.2em;
+  display:none;
+}
+
+#menu {
+  float:right;
+  text-align:center;
+  border-radius:100%;
+  padding:0.5em;
+  width:1.2em;
+  height:1.2em;
+  border:1px solid #e5e5e5;
+  display:inline-block;
+  cursor:pointer;
+}
+
+#menuwrap {
+  display:none;
+  z-index:9999999999;
+  right:0;
+  margin-top:0.5em;
+  position:absolute;
+  height:100%;
+  width:100%;
+  background:#ffffff;;
+}
+
+#menuinfo {
+  background:#ffffff;
+  width:100%;
+  border-radius:7px;
+}
+
+#menuinfo .wrap {
+  margin-bottom:0.5em!important;
+}
+
+#menuinfo p:first-child {
+  margin-top:0;
+}
+
+.icon {
+  font-size:0.9em;
+  margin-right:0.6em;
+}
+
+#mode {
+    height:1.2em;
+    color:#1753b7;
+    display:inline-block;
+    -webkit-transition:0.5s;
+    -moz-transition:0.5s;
+    -o-transition:0.5s;
+    transition:0.5s;
+}
+
+#menuinfo .section {
+  margin:2em 0em;
+}
+
+.filtertype {
+  color:#999999;
+  border-radius:7px;
+  display:inline-block;
+  margin:1em;
+  margin-top:0;
+  margin-left:0;
+  cursor:pointer;
+}
+
+.filtertype:hover, .filterout {
+  color:#1753b7;
+  font-weight:bold;
+}
+
+#notif {
+  font-weight:bold;
+  display:none;
+  color:crimson;
+}
+
 /* Tracks */
 
 #tracks {
@@ -217,7 +332,8 @@ audio {display:none!important;}
     overflow-y:scroll;
     min-height:4em;
     width:72.5%;
-    height:calc(100% - 130px);
+    margin-top:45px;
+    height:calc(100% - 45px - 130px);
 }
 
 #labels {
@@ -232,10 +348,6 @@ audio {display:none!important;}
 #tracks .lin {
     padding:1em;
     display:block;
-}
-
-.lin:nth-child(2) {
-    margin-top:45px;
 }
 
 .lin div {
@@ -269,12 +381,12 @@ audio {display:none!important;}
     color:#333333;
 }
 
-.tune:nth-child(odd) {
+.lin:nth-child(even) {
     background:#eaeaea!important;
 }
 
 #loadmore {
-    background:#d8d8d8!important;
+    background:#d9d9d9!important;
     color:#000000!important;
     font-weight:bold!important;
     transition:0.8s;
@@ -306,11 +418,11 @@ audio {display:none!important;}
 #buttons div {
     display:inline-block;
     vertical-align:middle;
-    margin:0.5em 1.5% 0.6em 1.5%;
+    margin:0.55em 1.55% 0.65em 1.55%;
 }
 
 .on {
-    opacity:0.3!important;
+    opacity:0.4!important;
 }
 
 #active {
@@ -372,11 +484,11 @@ audio {display:none!important;}
 
 #note {
     position:fixed;
-    top:1em;
-    right:1em;
+    top:1.25em;
+    right:1.5em;
     padding:0.5em 0.8em;
     border-radius:100%;
     border:1px solid #e5e5e5;
-    font-size:1.2em;
+    font-size:1em;
     z-index:999999999!important;
 }

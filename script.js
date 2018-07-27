@@ -6,34 +6,49 @@ var boombox = function() {
 
 var audioFiles = [];
 var postURLs = [];
+
 var linkOfWindow = window.location.href;
-var indexOfQuery = linkOfWindow.indexOf("?username=");
-var username = linkOfWindow.substring(indexOfQuery+10, linkOfWindow.length);
+var indexOfUsername = linkOfWindow.indexOf("?username=");
+var indexOfTag = linkOfWindow.indexOf("?tag=");
+var tagged = "";
+if (indexOfTag > 0) {
+	tagged = linkOfWindow.substring(indexOfTag+5, indexOfUsername);
+}
+var username = linkOfWindow.substring(indexOfUsername+10, linkOfWindow.length);
+
 var count = -1;
 var postsStart = 0;
 var postsEnd = 30;
+var postLength = 33;
 var postsTotal = 33;
 var numOfSongs = 0;
 var index = 0;
+
 var repeatBool = false;
 var shuffleBool = false;
+
 var current = "";
+
 var timer;
+
 var bool = true;
-var finishedBCProcess = false;
+
+var trackCache = "";
+
 /**
  * Gets first batch of tracks if there are any.
  **/
-$.getScript("//" + username + ".tumblr.com/api/read/json?type=audio", function() {
+$.getScript("https://" + username + ".tumblr.com/api/read/json?type=audio&tagged=" + tagged, function() {
     postsTotal = tumblr_api_read["posts-total"];
     postsStart = tumblr_api_read["posts-start"];
+
     console.log(postsTotal + " is the total amount of audio posts on " + username + ".tumblr.com.");
     if (postsTotal === 0 || isNaN(postsTotal)) {
         $("#loadmore").remove();
         return;
     }
     $("#currentUser").append("<a href='https://" + username + ".tumblr.com'>" + username + "</a>");
-    var link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal +"&type=audio";
+    var link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal + "&type=audio&tagged=" + tagged;
     retrieveAPI(link);
 });
 
@@ -43,42 +58,50 @@ $.getScript("//" + username + ".tumblr.com/api/read/json?type=audio", function()
  **/
 function retrieveAPI(url) {
     $.getScript(url, function() {
-      var i = 0;
+			var i = 0;
       while (bool && i < 30) {
             try {
                 var post = tumblr_api_read.posts[i];
+								postLength = tumblr_api_read.posts.length;
                 var audioEmbed = post["audio-embed"];
                 var track = post["id3-title"];
                 var artist = post["id3-artist"];
-            	var postURL = decodeURIComponent(post["url"]);
+            		var postURL = decodeURIComponent(post["url"]);
                 var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
                 var fileType = getFileType(audiofile);
                 if (fileType === 0) {
                     processTumblrAudio(audiofile);
-                    appendTracks(track, artist);
+                    appendTracks(track, artist, "tumblr");
                     postURLs[count] = postURL;
                 }
             	else if (fileType === 1) {
             	    count++;
             	    audioFiles[count] = decodeURIComponent(audiofile);
-            	    appendTracks(track, artist);
-		    postURLs[count] = postURL;
+            	    appendTracks(track, artist, "tumblr");
+									postURLs[count] = postURL;
             	}
                 else if(fileType === 2) {
                     processSCAudio(audiofile);
-                    appendTracks(track, artist);
+                    appendTracks(track, artist, "soundcloud");
                     postURLs[count] = postURL;
                 }
                 else if (fileType === 3) {
-		    count++;
-		    processBCAudio(audiofile, count);
-		    appendTracks(track, artist);
-		    audioFiles[count] = "//robinpx.github.io/audio/song.mp3"; // add empty audio in case there is none 
-	            postURLs[count] = postURL;
-		    bcAudioCheck(function() {
-		    	bool = true;
-		    });
+									  count++;
+										processBCAudio(audiofile, count);
+										appendTracks(track, artist, "bandcamp");
+										audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
+										postURLs[count] = postURL;
+										bool = true;
                 }
+								else if (fileType === 4) {
+									count++;
+									processSPAudio(audiofile, count);
+									appendTracks(track, artist, "spotify");
+									audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
+									postURLs[count] = postURL;
+									bool = true;
+
+								}
                 else {
                     postsEnd++;
                 }
@@ -87,27 +110,24 @@ function retrieveAPI(url) {
                 console.log(e);
                 i++;
             }
-	    i++;
+						i++;
         }
         console.log(count + " files processed.");
     }).done(function() {
-	numOfSongs = audioFiles.length;
-	$(".tune").unbind("click", pressedSong);
-	$(".tune").bind("click", pressedSong);
-	if (postsEnd <= postsTotal) {
-	   $("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
-	}
-    });
-}
+			numOfSongs = audioFiles.length;
+			console.log("postLength" + postLength + "\n postsTotal:" + postsTotal + "\n postsEnd: " + postsEnd);
+			console.log((postLength + postsEnd) + " total ");
 
-function bcAudioCheck(callback) {
-   if (finishedBCProcess === true) {
-	console.log("Bandcamp audio processed");
-	callback && callback();
-   }
-   else {
-	setTimeout(bcAudioCheck, 1000, callback);
-   }
+			if (postsEnd <= postsTotal && (postLength + postsEnd) > 50) {
+				$("#tracks").append("<div id='loadmore' class='lin' onClick='boombox.loadMore()'>Load more</div>");
+			}
+
+			$("#tracks").prepend(trackCache);
+
+			trackCache = $("#tracks .tune").detach();
+			filter();
+
+    });
 }
 
 /**
@@ -127,20 +147,22 @@ function getFileType(file) {
     else if(file.indexOf("bandcamp") > 0) {
       return 3;
     }
+		else if(file.indexOf("spotify") > 0) {
+			return 4;
+		}
     else {
         return false;
     }
 }
 
-function appendTracks(track, artist) {
+function appendTracks(track, artist, type) {
     if (track === undefined) {
         track = "Unknown";
     }
     if (artist === undefined) {
         artist = "Unknown";
     }
-		console.log(count + " inside appendtracks");
-    $("#tracks").append("<div class='lin tune song-" + count + "'><div class='track'><svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='1.4em' height='1.2em' viewBox='0 0 30 32'><g id='icomoon-ignore'></g><path d='M13.652 5.265l-7.696 6.134h-5.955v4.748l-0.003 0.003 0.003 0.003v4.698h5.987l7.664 6.015v-6.015h0.001v-9.451h-0.001z' fill='#000000'></path><path d='M16.105 10.726c1.142 1.522 1.746 3.336 1.746 5.246 0 1.95-0.627 3.795-1.813 5.335l0.832 0.641c1.329-1.726 2.032-3.792 2.032-5.976 0-2.139-0.677-4.171-1.957-5.877l-0.84 0.631z' fill='#000000'></path><path d='M20.336 6.919l-0.809 0.669c1.973 2.389 3.059 5.416 3.059 8.521 0 3.069-1.009 5.956-2.919 8.348l0.82 0.655c2.060-2.58 3.148-5.693 3.148-9.003-0-3.349-1.172-6.613-3.3-9.19z' fill='#000000'></path><path d='M23.606 3.51l-0.789 0.694c2.896 3.289 4.492 7.518 4.492 11.909 0 4.302-1.539 8.467-4.335 11.727l0.798 0.683c2.957-3.45 4.587-7.858 4.587-12.41 0-4.647-1.688-9.123-4.753-12.603z' fill='#000000'></path></svg>" + track + "</div><div class='artist'>" + artist + "</div></div>");
+    $("#tracks").append("<div class='" + type + " lin song-" + count + " tune'><div class='track'><svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='1.4em' height='1.2em' viewBox='0 0 30 32'><g id='icomoon-ignore'></g><path d='M13.652 5.265l-7.696 6.134h-5.955v4.748l-0.003 0.003 0.003 0.003v4.698h5.987l7.664 6.015v-6.015h0.001v-9.451h-0.001z' fill='#000000'></path><path d='M16.105 10.726c1.142 1.522 1.746 3.336 1.746 5.246 0 1.95-0.627 3.795-1.813 5.335l0.832 0.641c1.329-1.726 2.032-3.792 2.032-5.976 0-2.139-0.677-4.171-1.957-5.877l-0.84 0.631z' fill='#000000'></path><path d='M20.336 6.919l-0.809 0.669c1.973 2.389 3.059 5.416 3.059 8.521 0 3.069-1.009 5.956-2.919 8.348l0.82 0.655c2.060-2.58 3.148-5.693 3.148-9.003-0-3.349-1.172-6.613-3.3-9.19z' fill='#000000'></path><path d='M23.606 3.51l-0.789 0.694c2.896 3.289 4.492 7.518 4.492 11.909 0 4.302-1.539 8.467-4.335 11.727l0.798 0.683c2.957-3.45 4.587-7.858 4.587-12.41 0-4.647-1.688-9.123-4.753-12.603z' fill='#000000'></path></svg>" + track + "</div><div class='artist'>" + artist + "</div></div>");
 }
 
 /**
@@ -160,31 +182,52 @@ function processSCAudio(file) {
     // client id @ wordpress
 }
 
-function processBCAudio(audiofile, count) {
-    var url = audiofile.substring(0, audiofile.indexOf('" allowtransparency'));
-    console.log(url);
-    $("#player").append("<div id='bc'></div>");
-    var file = "";
+function processBCAudio(audioUrl, count) {
+    var url = audioUrl.substring(0, audioUrl.indexOf('" allowtransparency'));
+		var file = "";
 
-    $.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
-	var contentstr = data.contents;
-	var i = contentstr.indexOf("var playerdata");
-	var i2 = contentstr.indexOf("var parentpage");
-	contentstr = contentstr.substring(i, i2);
-	var mp3str = '"file":{"mp3-128":"';
-	var i3 = contentstr.indexOf(mp3str) + mp3str.length;
-	var i4 = i3 + contentstr.substring(i3).indexOf('"}');
-	contentstr = contentstr.substring(i3, i4);
+		$.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
+			var contentstr = data.contents;
 
-	file = contentstr;
+			var i = contentstr.indexOf("var playerdata");
+			var i2 = contentstr.indexOf("var parentpage");
+			contentstr = contentstr.substring(i, i2);
+			var mp3str = '"file":{"mp3-128":"';
+			var i3 = contentstr.indexOf(mp3str) + mp3str.length;
+			var i4 = i3 + contentstr.substring(i3).indexOf('"}');
+			contentstr = contentstr.substring(i3, i4);
 
-	}).done(function() {
-	console.log(file);
-	audioFiles[count] = file;
-	finishedBCProcess = true;
-   });
+			file = contentstr;
+
+		}).done(function() {
+			// console.log(file);
+	    audioFiles[count] = file;
+		});
 }
 
+function processSPAudio(audioUrl, count) {
+	var url = audioUrl;
+	var file = "";
+
+	$.getJSON("https://whatever-origin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
+		var contentstr = data.contents;
+
+		var i = contentstr.indexOf('script id="resource"');
+		var i2 = contentstr.indexOf('"track_number"');
+		contentstr = contentstr.substring(i, i2);
+
+		var mp3str = '"preview_url":"';
+		var i3 = contentstr.indexOf(mp3str) + mp3str.length;
+		var i4 = i3 + contentstr.substring(i3).indexOf('",');
+		contentstr = contentstr.substring(i3, i4).replace(/\\/g, "");
+
+		file = contentstr;
+
+	}).done(function() {
+		// console.log(file);
+		audioFiles[count] = file;
+	});
+}
 
 /**
  * Sets up the boombox and adds
@@ -221,41 +264,55 @@ function init() {
  * there are no tracks.
  **/
 function setBoombox() {
-    if (indexOfQuery === -1) {
+    if (indexOfUsername === -1) {
         $("#tracks").append("<div class='lin'>Welcome! Please enter a Tumblr username to begin listening.</div>");
         return;
     }
     else if ($(".highlight .track").html() !== null) {
-        $("#defined").show();
+        $("#defined").fadeIn();
         changeCurrentSong();
     }
-    else {
-        $("#tracks").append("<div class='lin'>Oh... there aren't any tunes on Tumblr user <a href='https://" + username + ".tumblr.com'>" + username + "</a>'s account.</div>");
+    else if (tagged !== -1) {
+        $("#tracks").append("<div class='lin'>It's quiet over here in <a href='https://" + username + ".tumblr.com/tagged/" + tagged + "'>#" + tagged.replace(/\+/g," ") + "</a> on Tumblr user <a href='https://" + username + ".tumblr.com'>" + username + "</a>'s account.</div>");
         return;
     }
+		else {
+        $("#tracks").append("<div class='lin'>Oh... there aren't any tunes on Tumblr user <a href='https://" + username + ".tumblr.com'>" + username + "</a>'s account.</div>");
+			return;
+		}
+}
+
+function setSongClass(direction) {
+	if (direction === "next") {
+		if ($("#tracks").find(".tune").length - $("." + current).index() <= 1) {
+			current = $(".tune").first().attr("class");
+		}
+		else {
+			current = $("." + current).next().attr("class");
+		}
+	}
+	else if (direction === "prev") {
+		if ($("." + current).prev().length === 0) {
+			current = $(".tune").last().attr("class");
+		}
+		else {
+			current = $("." + current).prev().attr("class");
+		}
+	}
+	current = current.substring(current.indexOf("song-"), current.indexOf(" tune"));
+	index = current.substring(current.indexOf("song-")+5, current.length);
+
 }
 
 function nextSong() {
      exitSong();
-     if (index === numOfSongs - 1) {
-         index = 0;
-     }
-     else {
-         index = index + 1;
-     }
-     current = "song-" + index;
+     setSongClass("next");
      enterSong();
 }
 
 function prevSong() {
     exitSong();
-    if (index === 0) {
-        index = numOfSongs - 1;
-    }
-    else {
-        index = index - 1;
-    }
-    current = "song-" + index;
+		setSongClass("prev");
     enterSong();
 }
 
@@ -270,8 +327,8 @@ function repeatSong() {
 function shuffleSong() {
     exitSong();
     console.log("Shuffling....");
-    index = Math.floor(Math.random() * (numOfSongs));
-    current = "song-" + index;
+    index = Math.floor(Math.random() * ($(".tune").length - 1));
+		current = "song-" + index;
     enterSong();
 }
 
@@ -351,7 +408,7 @@ function changeCurrentSong() {
       $("#by").hide();
       $("#currentArtist").empty();
     }
-    $("#currentPost").empty().append("<a href='" + postURLs[index] + "' target='_'>Go to post</a>");
+    $("#currentPost").empty().append("<a href='" + postURLs[index] + "' target='_blank'>Go to post</a>");
 }
 
 /**
@@ -411,7 +468,7 @@ function formatTime(sec) {
 function loadMore() {
     postsStart = postsEnd;
     postsEnd += 30;
-    var link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal + "&type=audio";
+    var link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal + "&type=audio&tagged=" + tagged;
     $("#loadmore").remove();
     if (postsStart <= postsTotal) {
         retrieveAPI(link);
@@ -431,8 +488,12 @@ function shiftProgress(elem, e) {
     }
 }
 
-function getAudioFile(i) {
-  return audioFiles[i];
+function getFirstAudioFile() {
+  return audioFiles[0];
+}
+
+function getUsername() {
+	return username;
 }
 
 function getRepeatBool() {
@@ -455,6 +516,46 @@ function getIndex() {
     return index;
 }
 
+function filter() {
+	$("#tracks").prepend(trackCache);
+
+	$(".filterout").each(function() {
+		var filterout = $(this).attr("id");
+		$("." + filterout).remove();
+	});
+
+	$(".tune").unbind("click", pressedSong);
+	$(".tune").bind("click", pressedSong);
+}
+
+function setFilter() {
+	exitSong();
+	filter();
+	$("#tracks .tune").removeClass("highlight");
+	current = $(".tune").first().attr("class");
+	current = current.substring(current.indexOf("song-"), current.indexOf(" tune"));
+	index = current.substring(current.indexOf("song-")+5, current.length);
+	enterSong();
+	$("#pause").click();
+}
+
+function getNumofHosts() {
+	var sum = 0;
+	if ($(".tune").hasClass("tumblr")) {
+		sum += 1;
+	}
+	if ($(".tune").hasClass("soundcloud")) {
+		sum += 1;
+	}
+  if ($(".tune").hasClass("bandcamp")) {
+	 sum += 1;
+	}
+	if ($(".tune").hasClass("spotify")) {
+		sum += 1;
+	}
+	return sum;
+}
+
 return {
     init: init,
     getIndex: getIndex,
@@ -463,11 +564,14 @@ return {
     setShuffleBool: setShuffleBool,
     getShuffleBool: getShuffleBool,
     shiftProgress: shiftProgress,
-    getAudioFile: getAudioFile,
+    getFirstAudioFile: getFirstAudioFile,
+		getUsername, getUsername,
     nextSong: nextSong,
     prevSong: prevSong,
     repeatSong: repeatSong,
     shuffleSong: shuffleSong,
+		getNumofHosts: getNumofHosts,
+		setFilter: setFilter,
     loadMore: loadMore
 }
 
@@ -499,7 +603,7 @@ window.onload = function() {
         }
     });
 
-    $("#player").append("<audio class='aud' src='" + boombox.getAudioFile(0) + "' preload='auto' id='song-0' controls></audio>");
+    $("#player").append("<audio class='aud' src='" + boombox.getFirstAudioFile() + "' preload='auto' id='song-0' controls></audio>");
 }
 
 $(document).ready(function(){
@@ -507,7 +611,8 @@ $(document).ready(function(){
     if (typeof(Storage) !== "undefined") {
         console.log("Has storage. Mode is currently " + localStorage.mode + ".");
         if (localStorage.mode === "on") {
-            $("body").addClass("filtered");
+            $("body").addClass("bodyfilter");
+						$("#infobar, #tracks, #labels, #playerbar").addClass("filtered");
             $("#day").show();
             $("#night").hide();
         }
@@ -518,10 +623,33 @@ $(document).ready(function(){
     $("#pause").hide();
     $("#buttons").fadeTo(600, 1);
 
-    $("#search").submit(function(event){
-       var value = $("input:first").val();
+    $("#usernamebar").submit(function(event){
+       var value = $(this).find("input:first").val();
        location.replace("?username=" + value);
    });
+
+	 $("#tagbar").submit(function(event){
+	 	 var value = $(this).find("input:first").val().replace(/ /g, "+");
+		 if (window.username !== undefined) {
+	 	 		location.replace("?tag=" + value + "?username=" + boombox.getUsername());
+	 		}
+			else {
+				$("#notif").show();
+			}
+	 });
+
+	 $(".filtertype").click(function() {
+		 var hosts = boombox.getNumofHosts();
+		 var filtered = $(".filterout").length;
+		 console.log("filtered : " + filtered + " \n hosts : " + hosts);
+		 if (!(hosts < filtered) && hosts > 1) {
+			 $(this).toggleClass("filterout");
+		 }
+		 else {
+			 $(this).removeClass("filterout");
+		 }
+		 boombox.setFilter();
+	 });
 
    $("#repeat").click(function() {
        if ($(this).hasClass("on")) {
@@ -549,27 +677,41 @@ $(document).ready(function(){
        boombox.shiftProgress($(this), e);
    });
 
+	 $("#open").click(function() {
+		 $("#menuwrap").fadeIn();
+		 $("#open").hide();
+		 $("#close").show();
+	 });
+
+	 $("#close").click(function() {
+		 $("#open").show();
+		 $("#close").hide();
+		 $("#menuwrap").fadeOut();
+	 });
+
     $("#mode").click(function() {
-        if (!$("body").hasClass("filtered")) {
-            $("body").addClass("filtered");
+        if (!$("body").hasClass("bodyfilter")) {
+						$("body").addClass("bodyfilter");
+						$("#infobar, #tracks, #labels, #playerbar").addClass("filtered");
             $("#day").show();
             $("#night").hide();
             localStorage.mode = "on";
         }
         else {
-            $("body").removeClass("filtered");
+					  $("body").removeClass("bodyfilter");
+				  	$("#infobar, #tracks, #labels, #playerbar").removeClass("filtered");
             $("#night").show();
             $("#day").hide();
             localStorage.mode = "off";
         }
     });
 
-    $("#currently").click(function() {
+  $("#currently").click(function() {
 	$("#more").show();
 	$(this).hide();
     });
 
-    $("#seeCurrent").click(function() {
+  $("#seeCurrent").click(function() {
 	$("#currently").show();
 	$("#more").hide();
     });
