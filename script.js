@@ -38,7 +38,7 @@ var trackCache = "";
 /**
  * Gets first batch of tracks if there are any.
  **/
-$.getScript("https://" + username + ".tumblr.com/api/read/json?type=audio&tagged=" + tagged, function() {
+$.getScript("//" + username + ".tumblr.com/api/read/json?type=audio&tagged=" + tagged, function() {
     postsTotal = tumblr_api_read["posts-total"];
     postsStart = tumblr_api_read["posts-start"];
 
