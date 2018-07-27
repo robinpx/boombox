@@ -34,6 +34,6 @@
  - [whatever-origin](https://github.com/ripper234/Whatever-Origin)
  - [Tumblr API v1](https://www.tumblr.com/docs/en/api/v1)
 
-## Acknowlegments 
+## Acknowledgments 
 - [Pixeden Icons](https://www.pixeden.com/icon-fonts/filled-7-icon-font-set)
 - [Icon Finder](https://www.iconfinder.com/)
