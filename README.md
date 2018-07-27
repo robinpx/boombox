@@ -16,9 +16,8 @@
 - Duration
 
 ### Track List 
-Clickable 
-
-Load more button
+#### Clickable 
+#### Load more button
 
 ### Sidebar
 #### Current song toggler
