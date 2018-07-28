@@ -1,5 +1,5 @@
 # boombox
-**boombox** is a responsive client-side music player that retrieves every audio post uploaded and embedded on Tumblr. 
+**boombox** is a responsive client-side JS music player that retrieves every audio post uploaded and embedded on Tumblr. 
 > Embedded audio players supported: Soundcloud, Bandcamp, Spotify 
 
 ## Features
