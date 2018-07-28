@@ -637,7 +637,7 @@ $(document).ready(function(){
    $(".filtertype").click(function() {
 	var hosts = boombox.getNumofHosts();
 	var filtered = $(".filterout").length;
-	console.log("filtered : " + filtered + " \n hosts : " + hosts);
+	   
 	if (!(hosts < filtered) && hosts > 1) {
 	    $(this).toggleClass("filterout");
 	}
