@@ -31,8 +31,6 @@ var current = "";
 
 var timer;
 
-var bool = true;
-
 var trackCache = "";
 
 /**
@@ -268,7 +266,7 @@ function setBoombox() {
         $("#defined").fadeIn();
         changeCurrentSong();
     }
-    else if (window.tagged !== undefined) {
+    else if (tagged.length > 0) {
         $("#tracks").append("<div class='lin'>It's quiet over here in <a href='https://" + username + ".tumblr.com/tagged/" + tagged + "'>#" + tagged.replace(/\+/g," ") + "</a> on Tumblr user <a href='https://" + username + ".tumblr.com'>" + username + "</a>'s account.</div>");
         return;
     }
