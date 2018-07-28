@@ -89,18 +89,15 @@ function retrieveAPI(url) {
 		    count++;
 	       	    processBCAudio(audiofile, count);
 		    appendTracks(track, artist, "bandcamp");
-		    audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
+		    audioFiles[count] = "./audio/emptysong.mp3";
 		    postURLs[count] = postURL;
-		    bool = true;
                 }
 		else if (fileType === 4) {
 		    count++;
 		    processSPAudio(audiofile, count);
 		    appendTracks(track, artist, "spotify");
-		    audioFiles[count] = "https://robinpx.github.io/audio/emptysong.mp3";
+		    audioFiles[count] = "./audio/emptysong.mp3";
 		    postURLs[count] = postURL;
-		    bool = true;
-
 		}
                 else {
                     postsEnd++;
