@@ -244,7 +244,7 @@ function init() {
         $("audio").bind("ended", endedSong);
         checkError();
         /* bind and check errors for first song */
-        document.getElementById(current).onprogress = function() { updateProgress(); }
+        document.getElementById(current).ontimeupdate = function() { updateProgress(); }
         document.getElementById(current).play();
         $("#pause").show();
         $(this).hide();
@@ -313,7 +313,7 @@ function repeatSong() {
     document.getElementById(current).currentTime = 0;
     document.getElementById(current).pause();
     console.log("Repeating....");
-    document.getElementById(current).onprogress = function() { updateProgress(); }
+    document.getElementById(current).ontimeupdate = function() { updateProgress(); }
     document.getElementById(current).play();
  }
 
@@ -365,7 +365,7 @@ function exitSong() {
  **/
 function enterSong() {
     setPlayer();
-    document.getElementById(current).onprogress = function() { updateProgress(); }
+    document.getElementById(current).ontimeupdate = function() { updateProgress(); }
     document.getElementById(current).play();
     $("." + current).addClass("highlight");
     $("#pause").show();
