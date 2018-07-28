@@ -30,7 +30,9 @@ var shuffleBool = false;
 var current = "";
 
 var timer;
-
+	
+var bool = true;
+	
 var trackCache = "";
 
 /**
