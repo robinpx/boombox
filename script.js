@@ -268,7 +268,7 @@ function setBoombox() {
         $("#defined").fadeIn();
         changeCurrentSong();
     }
-    else if (tagged !== -1) {
+    else if (window.tagged !== undefined) {
         $("#tracks").append("<div class='lin'>It's quiet over here in <a href='https://" + username + ".tumblr.com/tagged/" + tagged + "'>#" + tagged.replace(/\+/g," ") + "</a> on Tumblr user <a href='https://" + username + ".tumblr.com'>" + username + "</a>'s account.</div>");
         return;
     }
