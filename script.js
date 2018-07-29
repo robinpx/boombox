@@ -259,6 +259,7 @@ function init() {
 function setBoombox() {
     if (indexOfUsername === -1) {
         $("#tracks").append("<div class='lin'>Welcome! Please enter a Tumblr username to begin listening.</div>");
+	$("#menuinfo .wrap:nth-child(2), #menuinfo .wrap:last-child").hide();
         return;
     }
     else if ($(".highlight .track").html() !== null) {
@@ -622,12 +623,7 @@ $(document).ready(function(){
 
    $("#tagbar").submit(function(event){
 	var value = $(this).find("input:first").val().replace(/ /g, "+");
-        if (window.boombox.getUsername() !== undefined) {
-	    location.replace("?tag=" + value + "?username=" + boombox.getUsername());
-	 }
-	else {
-	    $("#notif").show();
-	}
+        location.replace("?tag=" + value + "?username=" + boombox.getUsername());
    });
 
    $(".filtertype").click(function() {
