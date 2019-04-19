@@ -2,38 +2,38 @@
  * Tumblr Boombox Script
  * github @robinpx
  **/
-var boombox = function() {
+const boombox = function() {
 
-var audioFiles = [];
-var postURLs = [];
+let audioFiles = [];
+let postURLs = [];
 
-var linkOfWindow = window.location.href;
-var indexOfUsername = linkOfWindow.indexOf("?username=");
-var indexOfTag = linkOfWindow.indexOf("?tag=");
-var tagged = "";
+let linkOfWindow = window.location.href;
+let indexOfUsername = linkOfWindow.indexOf("?username=");
+let indexOfTag = linkOfWindow.indexOf("?tag=");
+let tagged = "";
 if (indexOfTag > 0) {
     tagged = linkOfWindow.substring(indexOfTag+5, indexOfUsername);
 }
-var username = linkOfWindow.substring(indexOfUsername+10, linkOfWindow.length);
+let username = linkOfWindow.substring(indexOfUsername+10, linkOfWindow.length);
 
-var count = -1;
-var postsStart = 0;
-var postsEnd = 30;
-var postLength = 33;
-var postsTotal = 33;
-var numOfSongs = 0;
-var index = 0;
+let count = -1;
+let postsStart = 0;
+let postsEnd = 30;
+let postLength = 33;
+let postsTotal = 33;
+let numOfSongs = 0;
+let index = 0;
 
-var repeatBool = false;
-var shuffleBool = false;
+let repeatBool = false;
+let shuffleBool = false;
 
-var current = "";
+let current = "";
 
-var timer;
+let timer;
 	
-var bool = true;
+let bool = true;
 	
-var trackCache = "";
+let trackCache = "";
 
 /**
  * Gets first batch of tracks if there are any.
@@ -48,7 +48,7 @@ $.getScript("//" + username + ".tumblr.com/api/read/json?type=audio&tagged=" + t
         return;
     }
     $("#currentUser").append("<a href='https://" + username + ".tumblr.com'>" + username + "</a>");
-    var link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal + "&type=audio&tagged=" + tagged;
+    let link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal + "&type=audio&tagged=" + tagged;
     retrieveAPI(link);
 });
 
@@ -58,17 +58,17 @@ $.getScript("//" + username + ".tumblr.com/api/read/json?type=audio&tagged=" + t
  **/
 function retrieveAPI(url) {
     $.getScript(url, function() {
-      var i = 0;
+      let i = 0;
       while (bool && i < 30) {
             try {
-                var post = tumblr_api_read.posts[i];
+                let post = tumblr_api_read.posts[i];
 		postLength = tumblr_api_read.posts.length;
-                var audioEmbed = post["audio-embed"];
-                var track = post["id3-title"];
-                var artist = post["id3-artist"];
-            	var postURL = decodeURIComponent(post["url"]);
-                var audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
-                var fileType = getFileType(audiofile);
+                let audioEmbed = post["audio-embed"];
+                let track = post["id3-title"];
+                let artist = post["id3-artist"];
+            	let postURL = decodeURIComponent(post["url"]);
+                let audiofile = audioEmbed.substring(audioEmbed.indexOf("src") + 5, audioEmbed.indexOf('" frameborder'));
+                let fileType = getFileType(audiofile);
                 if (fileType === 0) {
                     processTumblrAudio(audiofile);
                     appendTracks(track, artist, "tumblr");
@@ -178,18 +178,18 @@ function processSCAudio(file) {
 }
 
 function processBCAudio(audioUrl, count) {
-    var url = audioUrl.substring(0, audioUrl.indexOf('" allowtransparency'));
-    var file = "";
+    let url = audioUrl.substring(0, audioUrl.indexOf('" allowtransparency'));
+    let file = "";
 
     $.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
-	var contentstr = data.contents;
+	let contentstr = data.contents;
 
-	var i = contentstr.indexOf("var playerdata");
-	var i2 = contentstr.indexOf("var parentpage");
+	let i = contentstr.indexOf("let playerdata");
+	let i2 = contentstr.indexOf("let parentpage");
 	contentstr = contentstr.substring(i, i2);
-	var mp3str = '"file":{"mp3-128":"';
-	var i3 = contentstr.indexOf(mp3str) + mp3str.length;
-	var i4 = i3 + contentstr.substring(i3).indexOf('"}');
+	let mp3str = '"file":{"mp3-128":"';
+	let i3 = contentstr.indexOf(mp3str) + mp3str.length;
+	let i4 = i3 + contentstr.substring(i3).indexOf('"}');
 	contentstr = contentstr.substring(i3, i4);
 
 	file = contentstr;
@@ -200,19 +200,19 @@ function processBCAudio(audioUrl, count) {
 }
 
 function processSPAudio(audioUrl, count) {
-     var url = audioUrl;
-     var file = "";
+     let url = audioUrl;
+     let file = "";
 
      $.getJSON("https://whatever-origin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
-	var contentstr = data.contents;
+	let contentstr = data.contents;
 
-	var i = contentstr.indexOf('script id="resource"');
-	var i2 = contentstr.indexOf('"track_number"');
+	let i = contentstr.indexOf('script id="resource"');
+	let i2 = contentstr.indexOf('"track_number"');
 	contentstr = contentstr.substring(i, i2);
 
-	var mp3str = '"preview_url":"';
-	var i3 = contentstr.indexOf(mp3str) + mp3str.length;
-	var i4 = i3 + contentstr.substring(i3).indexOf('",');
+	let mp3str = '"preview_url":"';
+	let i3 = contentstr.indexOf(mp3str) + mp3str.length;
+	let i4 = i3 + contentstr.substring(i3).indexOf('",');
 	contentstr = contentstr.substring(i3, i4).replace(/\\/g, "");
 
 	file = contentstr;
@@ -327,9 +327,9 @@ function shuffleSong() {
 }
 
 function pressedSong() {
-    var className = $(this).attr("class");
-    var songIndex = className.indexOf("song-");
-    var songNum = className.substring(songIndex+5, className.length);
+    let className = $(this).attr("class");
+    let songIndex = className.indexOf("song-");
+    let songNum = className.substring(songIndex+5, className.length);
     songNum = parseInt(songNum);
     exitSong();
     index = songNum;
@@ -390,8 +390,8 @@ function setPlayer() {
 }
 
 function changeCurrentSong() {
-    var currentTrack = $(".highlight .track").html();
-    var currentArtist = $(".highlight .artist").html();
+    let currentTrack = $(".highlight .track").html();
+    let currentArtist = $(".highlight .artist").html();
     $("#currentTrack").empty().append(currentTrack);
     if (currentArtist !== "Unknown") {
       $("#by").show();
@@ -411,8 +411,8 @@ function changeCurrentSong() {
 function checkError() {
     $("." + current).removeClass("error");
     timer = window.setTimeout(function() {
-        var time = document.getElementById(current).currentTime;
-        var dura = document.getElementById(current).duration;
+        let time = document.getElementById(current).currentTime;
+        let dura = document.getElementById(current).duration;
         if (time === 0 && isNaN(dura)) {
             $("." + current).addClass("error");
             console.log("Skipping. Did not load.");
@@ -425,15 +425,15 @@ function checkError() {
 }
 
 function updateProgress() {
-    var time = document.getElementById(current).currentTime;
-    var dura = document.getElementById(current).duration;
-    var loadbar = loadbar = document.getElementById(current).buffered.end(0);
-    var wid = document.getElementById("progressbg").offsetWidth;
+    let time = document.getElementById(current).currentTime;
+    let dura = document.getElementById(current).duration;
+    let loadbar = loadbar = document.getElementById(current).buffered.end(0);
+    let wid = document.getElementById("progressbg").offsetWidth;
     document.getElementById("currenttime").innerHTML = formatTime(time);
     document.getElementById("currentdura").innerHTML = formatTime(dura);
-    var prog =  wid * (time / dura);
-    var load = wid * (loadbar / dura);
-    var w = prog;
+    let prog =  wid * (time / dura);
+    let load = wid * (loadbar / dura);
+    let w = prog;
     $("#progress").animate({ width : w + "px" }, 1);
     $("#loading").animate({ width : load + "px" }, 1);
 }
@@ -442,9 +442,9 @@ function updateProgress() {
 * Change milliseconds to minutes and seconds.
 * // returns String
 **/
-function formatTime(sec) {
-   var min = Math.floor(sec / 60); // round
-   var sec = Math.floor(sec % 60);
+function formatTime(seconds) {
+   let min = Math.floor(seconds / 60); // round
+   let sec = Math.floor(seconds % 60);
    if (isNaN(min) || isNaN(sec)) {
        min = "0";
        sec = "0";
@@ -461,7 +461,7 @@ function formatTime(sec) {
 function loadMore() {
     postsStart = postsEnd;
     postsEnd += 30;
-    var link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal + "&type=audio&tagged=" + tagged;
+    let link = "https://" + username + ".tumblr.com/api/read/json?start=" + postsStart + "&num=" + postsTotal + "&type=audio&tagged=" + tagged;
     $("#loadmore").remove();
     if (postsStart <= postsTotal) {
         retrieveAPI(link);
@@ -469,13 +469,13 @@ function loadMore() {
 }
 
 function shiftProgress(elem, e) {
-    var pageX = e.pageX;
-    var left = elem.offset().left;
-    var dura = document.getElementById(current).duration;
-    var width = document.getElementById("progressbg").offsetWidth;
-    var position = pageX - left;
+    let pageX = e.pageX;
+    let left = elem.offset().left;
+    let dura = document.getElementById(current).duration;
+    let width = document.getElementById("progressbg").offsetWidth;
+    let position = pageX - left;
     if (!isNaN(dura)) {
-       var newTime = ((position * dura) / width);
+       let newTime = ((position * dura) / width);
        document.getElementById(current).currentTime = newTime;
        $("#progress").css({ width : position + "px" });
     }
@@ -513,7 +513,7 @@ function filter() {
    $("#tracks").prepend(trackCache);
 
    $(".filterout").each(function() {
-       var filterout = $(this).attr("id");
+       let filterout = $(this).attr("id");
        $("." + filterout).remove();
    });
 
@@ -533,7 +533,7 @@ function setFilter() {
 }
 
 function getNumofHosts() {
-   var sum = 0;
+   let sum = 0;
    if ($(".tune").hasClass("tumblr")) {
 	sum += 1;
    }
@@ -617,18 +617,18 @@ $(document).ready(function(){
     $("#buttons").fadeTo(600, 1);
 
     $("#usernamebar").submit(function(event){
-       var value = $(this).find("input:first").val();
+       let value = $(this).find("input:first").val();
        location.replace("?username=" + value);
    });
 
    $("#tagbar").submit(function(event){
-	var value = $(this).find("input:first").val().replace(/ /g, "+");
+	let value = $(this).find("input:first").val().replace(/ /g, "+");
         location.replace("?tag=" + value + "?username=" + boombox.getUsername());
    });
 
    $(".filtertype").click(function() {
-	var hosts = boombox.getNumofHosts();
-	var filtered = $(".filterout").length;
+	let hosts = boombox.getNumofHosts();
+	let filtered = $(".filterout").length;
 	   
 	if (!(hosts < filtered) && hosts > 1) {
 	    $(this).toggleClass("filterout");
@@ -705,15 +705,15 @@ $(document).ready(function(){
     });
 
     $("#scrollTo").click(function() {
-        var winWidth = $(window).width();
-        var elem, scr = null;
-        var scr = "+=" + ($(".highlight").first().offset().top - 45);
+        let winWidth = $(window).width();
+        let elem, scr = null;
+        scr = "+=" + ($(".highlight").first().offset().top - 45);
 
         if (winWidth >= 815) {
-            var $elem = $("#tracks");
+            let $elem = $("#tracks");
         }
         else {
-            var $elem = $("body, html");
+            let $elem = $("body, html");
             scr = ($(".highlight").first().offset().top - 65);
         }
 
@@ -723,11 +723,11 @@ $(document).ready(function(){
     });
 
     function jumpToSong() {
-        var winWidth = $(window).width();
+        let winWidth = $(window).width();
         if (winWidth < 875) {
-            var triggerScroll = 1000;
+            let triggerScroll = 1000;
             toSong = function() {
-            var scroll = $(window).scrollTop();
+            let scroll = $(window).scrollTop();
                 if (scroll > triggerScroll) {
                     $("#note").fadeIn();
                 }
