@@ -184,8 +184,8 @@ function processBCAudio(audioUrl, count) {
     $.getJSON("https://whateverorigin.herokuapp.com/get?url=" + encodeURIComponent(url) + "&callback=?", function(data){
 	let contentstr = data.contents;
 
-	let i = contentstr.indexOf("let playerdata");
-	let i2 = contentstr.indexOf("let parentpage");
+	let i = contentstr.indexOf("var playerdata"); 
+	let i2 = contentstr.indexOf("var parentpage");
 	contentstr = contentstr.substring(i, i2);
 	let mp3str = '"file":{"mp3-128":"';
 	let i3 = contentstr.indexOf(mp3str) + mp3str.length;
