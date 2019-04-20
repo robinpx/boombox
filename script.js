@@ -427,7 +427,7 @@ function checkError() {
 function updateProgress() {
     let time = document.getElementById(current).currentTime;
     let dura = document.getElementById(current).duration;
-    let loadbar = loadbar = document.getElementById(current).buffered.end(0);
+    let loadbar = document.getElementById(current).buffered.end(0);
     let wid = document.getElementById("progressbg").offsetWidth;
     document.getElementById("currenttime").innerHTML = formatTime(time);
     document.getElementById("currentdura").innerHTML = formatTime(dura);
