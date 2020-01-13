@@ -710,14 +710,14 @@ $(document).ready(function(){
         scr = "+=" + ($(".highlight").first().offset().top - 45);
 
         if (winWidth >= 815) {
-            let $elem = $("#tracks");
+            elem = $("#tracks");
         }
         else {
-            let $elem = $("body, html");
+            elem = $("body, html");
             scr = ($(".highlight").first().offset().top - 65);
         }
 
-        $elem.animate({
+        elem.animate({
             scrollTop : scr
         }, 500);
     });
